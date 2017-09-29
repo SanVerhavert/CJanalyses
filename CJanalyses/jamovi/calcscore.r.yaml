@@ -1,0 +1,11 @@
+---
+name:  calcScore
+title: Calculate score
+jrs:   '1.1'
+
+items:
+    - name:  text
+      title: Calculate score
+      type:  Preformatted
+
+...
