@@ -1,0 +1,11 @@
+---
+name:  BTLanalysis
+title: Bradley-Terry-Luce model and statistics
+jrs:   '1.1'
+
+items:
+    - name:  text
+      title: Bradley-Terry-Luce model and statistics
+      type:  Preformatted
+
+...
