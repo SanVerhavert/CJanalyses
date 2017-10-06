@@ -9,28 +9,59 @@ options:
     - name: data
       type: Data
 
-    - name: dep
-      title: Dependent Variable
+    - name: Repr1
+      title: Representation 1
       type: Variable
-
-    - name: group
-      title: Grouping Variable
+      permitted: [nominaltext]
+    
+    - name: Repr2
+      title: Representation 2
       type: Variable
-
-    - name: alt
-      title: Alternative hypothesis
-      type: List
-      options:
-        - title: Not equal
-          name:  notequal
-        - title: One greater
-          name:  onegreater
-        - title: Two greater
-          name:  twogreater
-      default: notequal
-
-    - name: varEq
-      title: Assume equal variances
+      permitted: [nominaltext]
+      
+    - name: Selected
+      title: Selected
+      type: Variable
+      permitted: [nominaltext]
+      
+    - name: Judge
+      title: Judge
+      type: Variable
+      permitted: [nominaltext]
+      
+    - name: estIters
+      title: number of estimation iterations
+      type: Integer
+      min: 0
+      default: 4
+      
+    - name: epsCor
+      title: Epsylon Correction Factor
+      type: Number
+      min: 0.0
+      default: 0.003
+      
+    - name: plot
+      title: draw plot
       type: Bool
-      default: true
-...
+      default: false
+    
+    - name: plotScale
+      title: Plot Estimates
+      type: Bool
+      default: false
+      
+    - name: plotGraph
+      title: NetworkGraph
+      type: Bool
+      default: false
+      
+    - name: rel
+      title: Reliability
+      type: Bool
+      default: false
+      
+    - name: misfit
+      title: Misfit
+      options: [ none, Infit, Lz ]
+      type: List

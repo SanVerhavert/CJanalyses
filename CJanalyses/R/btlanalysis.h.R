@@ -6,10 +6,17 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
-            dep = NULL,
-            group = NULL,
-            alt = "notequal",
-            varEq = TRUE, ...) {
+            Repr1 = NULL,
+            Repr2 = NULL,
+            Selected = NULL,
+            Judge = NULL,
+            estIters = 4,
+            epsCor = 0.003,
+            plot = FALSE,
+            plotScale = FALSE,
+            plotGraph = FALSE,
+            rel = FALSE,
+            misfit = NULL, ...) {
 
             super$initialize(
                 package='CJanalyses',
@@ -17,59 +24,135 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 requiresData=TRUE,
                 ...)
         
-            private$..dep <- jmvcore::OptionVariable$new(
-                "dep",
-                dep)
-            private$..group <- jmvcore::OptionVariable$new(
-                "group",
-                group)
-            private$..alt <- jmvcore::OptionList$new(
-                "alt",
-                alt,
+            private$..Repr1 <- jmvcore::OptionVariable$new(
+                "Repr1",
+                Repr1,
+                permitted=list(
+                    "nominaltext"))
+            private$..Repr2 <- jmvcore::OptionVariable$new(
+                "Repr2",
+                Repr2,
+                permitted=list(
+                    "nominaltext"))
+            private$..Selected <- jmvcore::OptionVariable$new(
+                "Selected",
+                Selected,
+                permitted=list(
+                    "nominaltext"))
+            private$..Judge <- jmvcore::OptionVariable$new(
+                "Judge",
+                Judge,
+                permitted=list(
+                    "nominaltext"))
+            private$..estIters <- jmvcore::OptionInteger$new(
+                "estIters",
+                estIters,
+                min=0,
+                default=4)
+            private$..epsCor <- jmvcore::OptionNumber$new(
+                "epsCor",
+                epsCor,
+                min=0,
+                default=0.003)
+            private$..plot <- jmvcore::OptionBool$new(
+                "plot",
+                plot,
+                default=FALSE)
+            private$..plotScale <- jmvcore::OptionBool$new(
+                "plotScale",
+                plotScale,
+                default=FALSE)
+            private$..plotGraph <- jmvcore::OptionBool$new(
+                "plotGraph",
+                plotGraph,
+                default=FALSE)
+            private$..rel <- jmvcore::OptionBool$new(
+                "rel",
+                rel,
+                default=FALSE)
+            private$..misfit <- jmvcore::OptionList$new(
+                "misfit",
+                misfit,
                 options=list(
-                    "notequal",
-                    "onegreater",
-                    "twogreater"),
-                default="notequal")
-            private$..varEq <- jmvcore::OptionBool$new(
-                "varEq",
-                varEq,
-                default=TRUE)
+                    "none",
+                    "Infit",
+                    "Lz"))
         
-            self$.addOption(private$..dep)
-            self$.addOption(private$..group)
-            self$.addOption(private$..alt)
-            self$.addOption(private$..varEq)
+            self$.addOption(private$..Repr1)
+            self$.addOption(private$..Repr2)
+            self$.addOption(private$..Selected)
+            self$.addOption(private$..Judge)
+            self$.addOption(private$..estIters)
+            self$.addOption(private$..epsCor)
+            self$.addOption(private$..plot)
+            self$.addOption(private$..plotScale)
+            self$.addOption(private$..plotGraph)
+            self$.addOption(private$..rel)
+            self$.addOption(private$..misfit)
         }),
     active = list(
-        dep = function() private$..dep$value,
-        group = function() private$..group$value,
-        alt = function() private$..alt$value,
-        varEq = function() private$..varEq$value),
+        Repr1 = function() private$..Repr1$value,
+        Repr2 = function() private$..Repr2$value,
+        Selected = function() private$..Selected$value,
+        Judge = function() private$..Judge$value,
+        estIters = function() private$..estIters$value,
+        epsCor = function() private$..epsCor$value,
+        plot = function() private$..plot$value,
+        plotScale = function() private$..plotScale$value,
+        plotGraph = function() private$..plotGraph$value,
+        rel = function() private$..rel$value,
+        misfit = function() private$..misfit$value),
     private = list(
-        ..dep = NA,
-        ..group = NA,
-        ..alt = NA,
-        ..varEq = NA)
+        ..Repr1 = NA,
+        ..Repr2 = NA,
+        ..Selected = NA,
+        ..Judge = NA,
+        ..estIters = NA,
+        ..epsCor = NA,
+        ..plot = NA,
+        ..plotScale = NA,
+        ..plotGraph = NA,
+        ..rel = NA,
+        ..misfit = NA)
 )
 
 BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
-        text = function() private$..text),
+        text = function() private$..text,
+        table = function() private$..table),
     private = list(
-        ..text = NA),
+        ..text = NA,
+        ..table = NA),
     public=list(
         initialize=function(options) {
             super$initialize(
                 options=options,
                 name="",
-                title="Bradley-Terry-Luce model and statistics")
+                title="Bradley-Terry-Luce model")
             private$..text <- jmvcore::Preformatted$new(
                 options=options,
                 name="text",
-                title="Bradley-Terry-Luce model and statistics")
-            self$add(private$..text)}))
+                title="Bradley-Terry-Luce model")
+            private$..table <- jmvcore::Table$new(
+                options=options,
+                name="table",
+                title="Estimates",
+                columns=list(
+                    list(
+                        `name`="Repr", 
+                        `title`="Representation", 
+                        `type`="text"),
+                    list(
+                        `name`="Ability", 
+                        `title`="Ability", 
+                        `type`="number"),
+                    list(
+                        `name`="se", 
+                        `title`="se", 
+                        `type`="number")))
+            self$add(private$..text)
+            self$add(private$..table)}))
 
 BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "BTLanalysisBase",
@@ -94,31 +177,59 @@ BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #'
 #' 
 #' @param data .
-#' @param dep .
-#' @param group .
-#' @param alt .
-#' @param varEq .
+#' @param Repr1 .
+#' @param Repr2 .
+#' @param Selected .
+#' @param Judge .
+#' @param estIters .
+#' @param epsCor .
+#' @param plot .
+#' @param plotScale .
+#' @param plotGraph .
+#' @param rel .
+#' @param misfit .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$table$asDF}
+#'
+#' \code{as.data.frame(results$table)}
 #'
 #' @export
 BTLanalysis <- function(
     data,
-    dep,
-    group,
-    alt = "notequal",
-    varEq = TRUE) {
+    Repr1,
+    Repr2,
+    Selected,
+    Judge,
+    estIters = 4,
+    epsCor = 0.003,
+    plot = FALSE,
+    plotScale = FALSE,
+    plotGraph = FALSE,
+    rel = FALSE,
+    misfit) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('BTLanalysis requires jmvcore to be installed (restart may be required)')
 
     options <- BTLanalysisOptions$new(
-        dep = dep,
-        group = group,
-        alt = alt,
-        varEq = varEq)
+        Repr1 = Repr1,
+        Repr2 = Repr2,
+        Selected = Selected,
+        Judge = Judge,
+        estIters = estIters,
+        epsCor = epsCor,
+        plot = plot,
+        plotScale = plotScale,
+        plotGraph = plotGraph,
+        rel = rel,
+        misfit = misfit)
 
     results <- BTLanalysisResults$new(
         options = options)

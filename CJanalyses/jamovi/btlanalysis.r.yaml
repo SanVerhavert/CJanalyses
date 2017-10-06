@@ -1,11 +1,25 @@
 ---
 name:  BTLanalysis
-title: Bradley-Terry-Luce model and statistics
+title: Bradley-Terry-Luce model
 jrs:   '1.1'
 
 items:
     - name:  text
-      title: Bradley-Terry-Luce model and statistics
+      title: Bradley-Terry-Luce model
       type:  Preformatted
-
-...
+    
+    - name: table
+      title: Estimates
+      type: Table
+      columns:
+        - name: Repr
+          title: Representation
+          type: text
+          
+        - name: Ability
+          title: Ability
+          type: number
+          
+        - name: se
+          title: se
+          type: number
