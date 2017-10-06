@@ -6,4 +6,4 @@
 
 # Jamovi files and folders
 *.jmo
-**/build
+build/
