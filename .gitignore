@@ -7,3 +7,4 @@
 # Jamovi files and folders
 *.jmo
 build/
+temp/
