@@ -7,5 +7,5 @@ For more information on Comparative Judgement see the [D-PAC website](http://www
 
 ## installation
 
-For instalation isntructions see the file jamovi module setup.R or the
-getting started tutorion of the [JAMOVI developers website](https://dev.jamovi.org)
+For installation instructions see the file ‘jamovi module setup.R’ or the
+getting started tutorial on the [JAMOVI developers website](https://dev.jamovi.org)
