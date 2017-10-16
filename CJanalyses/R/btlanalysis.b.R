@@ -10,7 +10,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           # `self$options` contains the options
           # `self$results` contains the results object (to populate)
           
-          # block error when no data is provided
+          # block error when no variables provided
           if( is.null( self$options$Judge ) |
               is.null( self$options$Repr1 ) |
               is.null( self$options$Repr2 ) |

@@ -12,10 +12,9 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             Judge = NULL,
             estIters = 4,
             epsCor = 0.003,
-            plot = FALSE,
+            rel = FALSE,
             plotScale = FALSE,
             plotGraph = FALSE,
-            rel = FALSE,
             misfit = NULL, ...) {
 
             super$initialize(
@@ -58,9 +57,9 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 epsCor,
                 min=0,
                 default=0.003)
-            private$..plot <- jmvcore::OptionBool$new(
-                "plot",
-                plot,
+            private$..rel <- jmvcore::OptionBool$new(
+                "rel",
+                rel,
                 default=FALSE)
             private$..plotScale <- jmvcore::OptionBool$new(
                 "plotScale",
@@ -69,10 +68,6 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..plotGraph <- jmvcore::OptionBool$new(
                 "plotGraph",
                 plotGraph,
-                default=FALSE)
-            private$..rel <- jmvcore::OptionBool$new(
-                "rel",
-                rel,
                 default=FALSE)
             private$..misfit <- jmvcore::OptionList$new(
                 "misfit",
@@ -88,10 +83,9 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             self$.addOption(private$..Judge)
             self$.addOption(private$..estIters)
             self$.addOption(private$..epsCor)
-            self$.addOption(private$..plot)
+            self$.addOption(private$..rel)
             self$.addOption(private$..plotScale)
             self$.addOption(private$..plotGraph)
-            self$.addOption(private$..rel)
             self$.addOption(private$..misfit)
         }),
     active = list(
@@ -101,10 +95,9 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         Judge = function() private$..Judge$value,
         estIters = function() private$..estIters$value,
         epsCor = function() private$..epsCor$value,
-        plot = function() private$..plot$value,
+        rel = function() private$..rel$value,
         plotScale = function() private$..plotScale$value,
         plotGraph = function() private$..plotGraph$value,
-        rel = function() private$..rel$value,
         misfit = function() private$..misfit$value),
     private = list(
         ..Repr1 = NA,
@@ -113,10 +106,9 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         ..Judge = NA,
         ..estIters = NA,
         ..epsCor = NA,
-        ..plot = NA,
+        ..rel = NA,
         ..plotScale = NA,
         ..plotGraph = NA,
-        ..rel = NA,
         ..misfit = NA)
 )
 
@@ -187,10 +179,9 @@ BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param Judge .
 #' @param estIters .
 #' @param epsCor .
-#' @param plot .
+#' @param rel .
 #' @param plotScale .
 #' @param plotGraph .
-#' @param rel .
 #' @param misfit .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -213,10 +204,9 @@ BTLanalysis <- function(
     Judge,
     estIters = 4,
     epsCor = 0.003,
-    plot = FALSE,
+    rel = FALSE,
     plotScale = FALSE,
     plotGraph = FALSE,
-    rel = FALSE,
     misfit) {
 
     if ( ! requireNamespace('jmvcore'))
@@ -229,10 +219,9 @@ BTLanalysis <- function(
         Judge = Judge,
         estIters = estIters,
         epsCor = epsCor,
-        plot = plot,
+        rel = rel,
         plotScale = plotScale,
         plotGraph = plotGraph,
-        rel = rel,
         misfit = misfit)
 
     results <- BTLanalysisResults$new(

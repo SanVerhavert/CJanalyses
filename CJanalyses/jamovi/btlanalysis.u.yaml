@@ -54,13 +54,11 @@ children:
     margin: large
     children:
       - type: CheckBox
-        name: plot
+        name: rel
       - type: CheckBox
         name: plotScale
       - type: CheckBox
         name: plotGraph
-      - type: CheckBox
-        name: rel
   - type: LayoutBox
     margin: large
     children:

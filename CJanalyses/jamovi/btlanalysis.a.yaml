@@ -41,8 +41,8 @@ options:
       min: 0.0
       default: 0.003
       
-    - name: plot
-      title: draw plot
+    - name: rel
+      title: Reliability
       type: Bool
       default: false
     
@@ -53,11 +53,6 @@ options:
       
     - name: plotGraph
       title: NetworkGraph
-      type: Bool
-      default: false
-      
-    - name: rel
-      title: Reliability
       type: Bool
       default: false
       
