@@ -8,4 +8,4 @@ Description: Just try it out...
 License: GPL(>= 3)
 Encoding: UTF-8
 LazyData: true
-Imports: jmvcore (>= 0.5.5), R6
+Imports: jmvcore (>= 0.5.5), R6, igraph

@@ -1,9 +1,13 @@
 ---
 name:  BTLanalysis
-title: Bradley-Terry-Luce model
+title: Bradley-Terry-Luce model and statistics
 jrs:   '1.1'
 
 items:
+    - name: debugText
+      title: Debug
+      type: Preformatted
+      
     - name:  text
       title: Bradley-Terry-Luce model
       type:  Preformatted
@@ -11,6 +15,15 @@ items:
     - name: table
       title: Estimates
       type: Table
+      
+      clearWith: 
+        - Repr1
+        - Repr2
+        - Selected
+        - Judge
+        - estIters
+        - epsCor
+        
       columns:
         - name: Repr
           title: Representation
@@ -23,3 +36,8 @@ items:
         - name: se
           title: se
           type: number
+          
+    - name: networkPlot
+      title: Comparisons plot
+      type: Image
+      renderFun: .netPlot

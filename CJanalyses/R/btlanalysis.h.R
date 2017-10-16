@@ -115,17 +115,25 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
 BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
+        debugText = function() private$..debugText,
         text = function() private$..text,
-        table = function() private$..table),
+        table = function() private$..table,
+        networkPlot = function() private$..networkPlot),
     private = list(
+        ..debugText = NA,
         ..text = NA,
-        ..table = NA),
+        ..table = NA,
+        ..networkPlot = NA),
     public=list(
         initialize=function(options) {
             super$initialize(
                 options=options,
                 name="",
-                title="Bradley-Terry-Luce model")
+                title="Bradley-Terry-Luce model and statistics")
+            private$..debugText <- jmvcore::Preformatted$new(
+                options=options,
+                name="debugText",
+                title="Debug")
             private$..text <- jmvcore::Preformatted$new(
                 options=options,
                 name="text",
@@ -134,6 +142,13 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 options=options,
                 name="table",
                 title="Estimates",
+                clearWith=list(
+                    "Repr1",
+                    "Repr2",
+                    "Selected",
+                    "Judge",
+                    "estIters",
+                    "epsCor"),
                 columns=list(
                     list(
                         `name`="Repr", 
@@ -147,8 +162,15 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                         `name`="se", 
                         `title`="se", 
                         `type`="number")))
+            private$..networkPlot <- jmvcore::Image$new(
+                options=options,
+                name="networkPlot",
+                title="Comparisons plot",
+                renderFun=".netPlot")
+            self$add(private$..debugText)
             self$add(private$..text)
-            self$add(private$..table)}))
+            self$add(private$..table)
+            self$add(private$..networkPlot)}))
 
 BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "BTLanalysisBase",
@@ -185,8 +207,10 @@ BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param misfit .
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$networkPlot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
