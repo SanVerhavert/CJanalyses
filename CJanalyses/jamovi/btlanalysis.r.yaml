@@ -7,6 +7,7 @@ items:
     - name: debugText
       title: Debug
       type: Preformatted
+      visible: TRUE
       
     - name:  text
       title: Bradley-Terry-Luce model
@@ -40,4 +41,5 @@ items:
     - name: networkPlot
       title: Comparisons plot
       type: Image
+      visible: false
       renderFun: .netPlot

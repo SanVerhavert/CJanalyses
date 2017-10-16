@@ -133,7 +133,8 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..debugText <- jmvcore::Preformatted$new(
                 options=options,
                 name="debugText",
-                title="Debug")
+                title="Debug",
+                visible=TRUE)
             private$..text <- jmvcore::Preformatted$new(
                 options=options,
                 name="text",
@@ -166,6 +167,7 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 options=options,
                 name="networkPlot",
                 title="Comparisons plot",
+                visible=FALSE,
                 renderFun=".netPlot")
             self$add(private$..debugText)
             self$add(private$..text)

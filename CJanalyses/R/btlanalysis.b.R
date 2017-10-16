@@ -93,20 +93,32 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       rm(i)
       
       self$results$table$setState( Abil )
+      
+      if( self$options$plotGraph )
+      {
+        self$results$networkPlot$setVisible( visible = TRUE )
+      } else
+      {
+        self$results$networkPlot$setVisible( visible = FALSE )
+      }
+      
     },
     .netPlot = function( image, ... ) {
-      Data <- image$state
-
-      graphDat <- graph_from_data_frame( d = Data )
-
-      res <- self$results$table$state
-
-      plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
-      plotCol <- plotCol( length( res$Repr) )
-
-      par( mar = c( 2,2,2,2 ) )
-      plot( graphDat, edge.arrow.size = .2, vertex.color = plotCol )
-
-      TRUE
+      
+        
+        Data <- image$state
+        
+        graphDat <- graph_from_data_frame( d = Data )
+        
+        res <- self$results$table$state
+        
+        plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
+        plotCol <- plotCol( length( res$Repr) )
+        
+        par( mar = c( 2,2,2,2 ) )
+        plot( graphDat, edge.arrow.size = .2, vertex.color = plotCol )
+        
+        TRUE
+      
     } )
 )
