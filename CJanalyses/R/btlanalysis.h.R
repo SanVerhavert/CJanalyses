@@ -13,8 +13,8 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             estIters = 4,
             epsCor = 0.003,
             rel = FALSE,
-            plotScale = FALSE,
             plotGraph = FALSE,
+            plotScale = FALSE,
             misfit = NULL, ...) {
 
             super$initialize(
@@ -61,13 +61,13 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 "rel",
                 rel,
                 default=FALSE)
-            private$..plotScale <- jmvcore::OptionBool$new(
-                "plotScale",
-                plotScale,
-                default=FALSE)
             private$..plotGraph <- jmvcore::OptionBool$new(
                 "plotGraph",
                 plotGraph,
+                default=FALSE)
+            private$..plotScale <- jmvcore::OptionBool$new(
+                "plotScale",
+                plotScale,
                 default=FALSE)
             private$..misfit <- jmvcore::OptionList$new(
                 "misfit",
@@ -84,8 +84,8 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             self$.addOption(private$..estIters)
             self$.addOption(private$..epsCor)
             self$.addOption(private$..rel)
-            self$.addOption(private$..plotScale)
             self$.addOption(private$..plotGraph)
+            self$.addOption(private$..plotScale)
             self$.addOption(private$..misfit)
         }),
     active = list(
@@ -96,8 +96,8 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         estIters = function() private$..estIters$value,
         epsCor = function() private$..epsCor$value,
         rel = function() private$..rel$value,
-        plotScale = function() private$..plotScale$value,
         plotGraph = function() private$..plotGraph$value,
+        plotScale = function() private$..plotScale$value,
         misfit = function() private$..misfit$value),
     private = list(
         ..Repr1 = NA,
@@ -107,8 +107,8 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         ..estIters = NA,
         ..epsCor = NA,
         ..rel = NA,
-        ..plotScale = NA,
         ..plotGraph = NA,
+        ..plotScale = NA,
         ..misfit = NA)
 )
 
@@ -118,12 +118,14 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
         debugText = function() private$..debugText,
         text = function() private$..text,
         table = function() private$..table,
-        networkPlot = function() private$..networkPlot),
+        networkPlot = function() private$..networkPlot,
+        scalePlot = function() private$..scalePlot),
     private = list(
         ..debugText = NA,
         ..text = NA,
         ..table = NA,
-        ..networkPlot = NA),
+        ..networkPlot = NA,
+        ..scalePlot = NA),
     public=list(
         initialize=function(options) {
             super$initialize(
@@ -152,6 +154,10 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                     "epsCor"),
                 columns=list(
                     list(
+                        `name`="RankNo", 
+                        `title`="Rank Number", 
+                        `type`="integer"),
+                    list(
                         `name`="Repr", 
                         `title`="Representation", 
                         `type`="text"),
@@ -169,10 +175,19 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 title="Comparisons plot",
                 visible=FALSE,
                 renderFun=".netPlot")
+            private$..scalePlot <- jmvcore::Image$new(
+                options=options,
+                name="scalePlot",
+                title="Comparisons plot",
+                width=800,
+                height=500,
+                visible=FALSE,
+                renderFun=".scalePlot")
             self$add(private$..debugText)
             self$add(private$..text)
             self$add(private$..table)
-            self$add(private$..networkPlot)}))
+            self$add(private$..networkPlot)
+            self$add(private$..scalePlot)}))
 
 BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "BTLanalysisBase",
@@ -204,8 +219,8 @@ BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param estIters .
 #' @param epsCor .
 #' @param rel .
-#' @param plotScale .
 #' @param plotGraph .
+#' @param plotScale .
 #' @param misfit .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -213,6 +228,7 @@ BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$networkPlot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$scalePlot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -231,8 +247,8 @@ BTLanalysis <- function(
     estIters = 4,
     epsCor = 0.003,
     rel = FALSE,
-    plotScale = FALSE,
     plotGraph = FALSE,
+    plotScale = FALSE,
     misfit) {
 
     if ( ! requireNamespace('jmvcore'))
@@ -246,8 +262,8 @@ BTLanalysis <- function(
         estIters = estIters,
         epsCor = epsCor,
         rel = rel,
-        plotScale = plotScale,
         plotGraph = plotGraph,
+        plotScale = plotScale,
         misfit = misfit)
 
     results <- BTLanalysisResults$new(

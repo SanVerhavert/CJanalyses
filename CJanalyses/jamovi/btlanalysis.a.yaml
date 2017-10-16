@@ -46,13 +46,13 @@ options:
       type: Bool
       default: false
     
-    - name: plotScale
-      title: Plot Estimates
+    - name: plotGraph
+      title: Plot Network Graph of comparisons
       type: Bool
       default: false
       
-    - name: plotGraph
-      title: NetworkGraph
+    - name: plotScale
+      title: Plot Estimates
       type: Bool
       default: false
       

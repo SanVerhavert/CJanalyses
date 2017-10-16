@@ -84,6 +84,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       {
         Table$addRow( rowKey = i,
                       values = list(
+                        RankNo = i,
                         Repr = as.character( Abil$Repr[i] ),
                         Ability= Abil$Ability[i],
                         se = Abil$se[i]
@@ -96,10 +97,24 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       
       if( self$options$plotGraph )
       {
+        self$results$plotTitle$setVisible( visible = TRUE )
         self$results$networkPlot$setVisible( visible = TRUE )
       } else
       {
+        if( !self$options$plotScale )
+          self$results$plotTitle$setVisible( visible = FALSE )
         self$results$networkPlot$setVisible( visible = FALSE )
+      }
+      
+      if( self$options$plotScale )
+      {
+        self$results$plotTitle$setVisible( visible = TRUE )
+        self$results$scalePlot$setVisible( visible = TRUE )
+      } else
+      {
+        if( !self$options$plotScale )
+          self$results$plotTitle$setVisible( visible = FALSE )
+        self$results$scalePlot$setVisible( visible = FALSE )
       }
       
     },
@@ -119,6 +134,23 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         plot( graphDat, edge.arrow.size = .2, vertex.color = plotCol )
         
         TRUE
+    },
+    .scalePlot = function( image, ...) {
+      Ability <- self$results$table$state
       
+      yMax <- max( Ability$Ability ) + 2 * max( Ability$se )
+      yMin <- min( Ability$Ability ) - 2 * max( Ability$se )
+      
+      plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
+      plotCol <- plotCol( length( Ability$Repr) )
+      
+      plot( 1:length( Ability$Repr ), Ability$Ability, col = plotCol,
+            xaxt = "n", xlab = "Representation",
+            ylab = "Logit Score", ylim = c( yMin, yMax ) )
+      axis( side = 1, at = 1:length( Ability$Repr ) )
+      errbar( 1:length( Ability$Repr ), Ability$Ability,
+              height = 2 * Ability$se, width = .05, col = plotCol )
+      
+      TRUE
     } )
 )

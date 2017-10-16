@@ -10,8 +10,19 @@ items:
       visible: TRUE
       
     - name:  text
-      title: Bradley-Terry-Luce model
       type:  Preformatted
+      
+    - name: mainTitle
+      title: Bradley-Terry-Luce model
+      type: Preformatted
+    
+    - name: reliab
+      title: Scale Separation Reliability
+      type: Preformatted
+      
+    - name: tableTitle
+      title: Estimates
+      type: Preformatted
     
     - name: table
       title: Estimates
@@ -26,6 +37,10 @@ items:
         - epsCor
         
       columns:
+        - name: RankNo
+          title: Rank Number
+          type: integer
+          
         - name: Repr
           title: Representation
           type: text
@@ -38,8 +53,21 @@ items:
           title: se
           type: number
           
+    - name: plotTitle
+      title: Plots
+      type: Preformatted
+      visible: false
+          
     - name: networkPlot
       title: Comparisons plot
       type: Image
       visible: false
       renderFun: .netPlot
+      
+    - name: scalePlot
+      title: Comparisons plot
+      type: Image
+      width: 800
+      height: 500
+      visible: false
+      renderFun: .scalePlot

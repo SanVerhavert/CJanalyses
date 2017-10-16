@@ -56,9 +56,9 @@ children:
       - type: CheckBox
         name: rel
       - type: CheckBox
-        name: plotScale
-      - type: CheckBox
         name: plotGraph
+      - type: CheckBox
+        name: plotScale
   - type: LayoutBox
     margin: large
     children:
