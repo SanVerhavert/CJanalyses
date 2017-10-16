@@ -10,11 +10,18 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           # `self$options` contains the options
           # `self$results` contains the results object (to populate)
           
+          # block error when no data is provided
+          if( is.null( self$options$Judge ) |
+              is.null( self$options$Repr1 ) |
+              is.null( self$options$Repr2 ) |
+              is.null( self$options$Selected ) )
+            return( NULL )
+          
           # preparation ----
           Data <- self$data[ , c( self$options$Judge,
                                   self$options$Repr1,
                                   self$options$Repr2,
-                                  self$options$Selected) ]
+                                  self$options$Selected ) ]
           
           names( Data ) <- c( "Judge", "Repr1", "Repr2", "Selected" )
           
@@ -83,5 +90,5 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           }
           rm(i)
           
-        })
+        } )
 )
