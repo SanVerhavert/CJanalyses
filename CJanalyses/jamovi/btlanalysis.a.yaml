@@ -12,22 +12,22 @@ options:
     - name: Repr1
       title: Representation 1
       type: Variable
-      permitted: [nominaltext]
+      permitted: [nominal, nominaltext]
     
     - name: Repr2
       title: Representation 2
       type: Variable
-      permitted: [nominaltext]
+      permitted: [nominal, nominaltext]
       
     - name: Selected
       title: Selected
       type: Variable
-      permitted: [nominaltext]
+      permitted: [nominal, nominaltext]
       
     - name: Judge
       title: Judge
       type: Variable
-      permitted: [nominaltext]
+      permitted: [nominal, nominaltext]
       
     - name: estIters
       title: number of estimation iterations

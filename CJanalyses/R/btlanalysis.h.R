@@ -28,21 +28,25 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 "Repr1",
                 Repr1,
                 permitted=list(
+                    "nominal",
                     "nominaltext"))
             private$..Repr2 <- jmvcore::OptionVariable$new(
                 "Repr2",
                 Repr2,
                 permitted=list(
+                    "nominal",
                     "nominaltext"))
             private$..Selected <- jmvcore::OptionVariable$new(
                 "Selected",
                 Selected,
                 permitted=list(
+                    "nominal",
                     "nominaltext"))
             private$..Judge <- jmvcore::OptionVariable$new(
                 "Judge",
                 Judge,
                 permitted=list(
+                    "nominal",
                     "nominaltext"))
             private$..estIters <- jmvcore::OptionInteger$new(
                 "estIters",
