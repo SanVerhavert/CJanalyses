@@ -117,12 +117,18 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     active = list(
         debugText = function() private$..debugText,
         text = function() private$..text,
+        mainTitle = function() private$..mainTitle,
+        rel = function() private$..rel,
+        tableTitle = function() private$..tableTitle,
         table = function() private$..table,
         networkPlot = function() private$..networkPlot,
         scalePlot = function() private$..scalePlot),
     private = list(
         ..debugText = NA,
         ..text = NA,
+        ..mainTitle = NA,
+        ..rel = NA,
+        ..tableTitle = NA,
         ..table = NA,
         ..networkPlot = NA,
         ..scalePlot = NA),
@@ -139,8 +145,20 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 visible=TRUE)
             private$..text <- jmvcore::Preformatted$new(
                 options=options,
-                name="text",
+                name="text")
+            private$..mainTitle <- jmvcore::Preformatted$new(
+                options=options,
+                name="mainTitle",
                 title="Bradley-Terry-Luce model")
+            private$..rel <- jmvcore::Preformatted$new(
+                options=options,
+                name="rel",
+                title="Scale Separation Reliability",
+                visible=FALSE)
+            private$..tableTitle <- jmvcore::Preformatted$new(
+                options=options,
+                name="tableTitle",
+                title="Estimates")
             private$..table <- jmvcore::Table$new(
                 options=options,
                 name="table",
@@ -178,13 +196,16 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..scalePlot <- jmvcore::Image$new(
                 options=options,
                 name="scalePlot",
-                title="Comparisons plot",
+                title="Estimates plot",
                 width=800,
                 height=500,
                 visible=FALSE,
                 renderFun=".scalePlot")
             self$add(private$..debugText)
             self$add(private$..text)
+            self$add(private$..mainTitle)
+            self$add(private$..rel)
+            self$add(private$..tableTitle)
             self$add(private$..table)
             self$add(private$..networkPlot)
             self$add(private$..scalePlot)}))
@@ -226,6 +247,9 @@ BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$mainTitle} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$rel} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$tableTitle} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$networkPlot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$scalePlot} \tab \tab \tab \tab \tab an image \cr

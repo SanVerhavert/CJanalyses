@@ -93,27 +93,36 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       }
       rm(i)
       
+      # reliability ----
+      if( self$options$rel )
+      {
+        self$results$rel$setVisible( visible = TRUE )
+        
+        relText <- paste0( "SSR = ", round( reliability( Abildf = Abil ),
+                                            digits = 3 ) )
+        
+        self$results$rel$setContent( relText )
+        
+      } else self$results$rel$setVisible( visible = FALSE )
+      
+      #-------------------------------------------------------------------------
+      
+      # preparations for plots ----
       self$results$table$setState( Abil )
       
       if( self$options$plotGraph )
       {
-        self$results$plotTitle$setVisible( visible = TRUE )
         self$results$networkPlot$setVisible( visible = TRUE )
       } else
       {
-        if( !self$options$plotScale )
-          self$results$plotTitle$setVisible( visible = FALSE )
         self$results$networkPlot$setVisible( visible = FALSE )
       }
       
       if( self$options$plotScale )
       {
-        self$results$plotTitle$setVisible( visible = TRUE )
         self$results$scalePlot$setVisible( visible = TRUE )
       } else
       {
-        if( !self$options$plotScale )
-          self$results$plotTitle$setVisible( visible = FALSE )
         self$results$scalePlot$setVisible( visible = FALSE )
       }
       

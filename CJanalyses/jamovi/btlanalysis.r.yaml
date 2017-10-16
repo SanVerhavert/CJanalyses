@@ -16,9 +16,10 @@ items:
       title: Bradley-Terry-Luce model
       type: Preformatted
     
-    - name: reliab
+    - name: rel
       title: Scale Separation Reliability
       type: Preformatted
+      visible: FALSE
       
     - name: tableTitle
       title: Estimates
@@ -53,11 +54,6 @@ items:
           title: se
           type: number
           
-    - name: plotTitle
-      title: Plots
-      type: Preformatted
-      visible: false
-          
     - name: networkPlot
       title: Comparisons plot
       type: Image
@@ -65,7 +61,7 @@ items:
       renderFun: .netPlot
       
     - name: scalePlot
-      title: Comparisons plot
+      title: Estimates plot
       type: Image
       width: 800
       height: 500
