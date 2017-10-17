@@ -15,7 +15,8 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             rel = FALSE,
             plotGraph = FALSE,
             plotScale = FALSE,
-            misfit = NULL, ...) {
+            misfit = NULL,
+            flagBound = 2, ...) {
 
             super$initialize(
                 package='CJanalyses',
@@ -76,6 +77,11 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                     "none",
                     "Infit",
                     "Lz"))
+            private$..flagBound <- jmvcore::OptionInteger$new(
+                "flagBound",
+                flagBound,
+                min=0,
+                default=2)
         
             self$.addOption(private$..Repr1)
             self$.addOption(private$..Repr2)
@@ -87,6 +93,7 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             self$.addOption(private$..plotGraph)
             self$.addOption(private$..plotScale)
             self$.addOption(private$..misfit)
+            self$.addOption(private$..flagBound)
         }),
     active = list(
         Repr1 = function() private$..Repr1$value,
@@ -98,7 +105,8 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         rel = function() private$..rel$value,
         plotGraph = function() private$..plotGraph$value,
         plotScale = function() private$..plotScale$value,
-        misfit = function() private$..misfit$value),
+        misfit = function() private$..misfit$value,
+        flagBound = function() private$..flagBound$value),
     private = list(
         ..Repr1 = NA,
         ..Repr2 = NA,
@@ -109,7 +117,8 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         ..rel = NA,
         ..plotGraph = NA,
         ..plotScale = NA,
-        ..misfit = NA)
+        ..misfit = NA,
+        ..flagBound = NA)
 )
 
 BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
@@ -117,21 +126,11 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     active = list(
         debugText = function() private$..debugText,
         text = function() private$..text,
-        mainTitle = function() private$..mainTitle,
-        rel = function() private$..rel,
-        tableTitle = function() private$..tableTitle,
-        table = function() private$..table,
-        networkPlot = function() private$..networkPlot,
-        scalePlot = function() private$..scalePlot),
+        mainTitle = function() private$..mainTitle),
     private = list(
         ..debugText = NA,
         ..text = NA,
-        ..mainTitle = NA,
-        ..rel = NA,
-        ..tableTitle = NA,
-        ..table = NA,
-        ..networkPlot = NA,
-        ..scalePlot = NA),
+        ..mainTitle = NA),
     public=list(
         initialize=function(options) {
             super$initialize(
@@ -146,69 +145,154 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..text <- jmvcore::Preformatted$new(
                 options=options,
                 name="text")
-            private$..mainTitle <- jmvcore::Preformatted$new(
-                options=options,
-                name="mainTitle",
-                title="Bradley-Terry-Luce model")
-            private$..rel <- jmvcore::Preformatted$new(
-                options=options,
-                name="rel",
-                title="Scale Separation Reliability",
-                visible=FALSE)
-            private$..tableTitle <- jmvcore::Preformatted$new(
-                options=options,
-                name="tableTitle",
-                title="Estimates")
-            private$..table <- jmvcore::Table$new(
-                options=options,
-                name="table",
-                title="Estimates",
-                clearWith=list(
-                    "Repr1",
-                    "Repr2",
-                    "Selected",
-                    "Judge",
-                    "estIters",
-                    "epsCor"),
-                columns=list(
-                    list(
-                        `name`="RankNo", 
-                        `title`="Rank Number", 
-                        `type`="integer"),
-                    list(
-                        `name`="Repr", 
-                        `title`="Representation", 
-                        `type`="text"),
-                    list(
-                        `name`="Ability", 
-                        `title`="Ability", 
-                        `type`="number"),
-                    list(
-                        `name`="se", 
-                        `title`="se", 
-                        `type`="number")))
-            private$..networkPlot <- jmvcore::Image$new(
-                options=options,
-                name="networkPlot",
-                title="Comparisons plot",
-                visible=FALSE,
-                renderFun=".netPlot")
-            private$..scalePlot <- jmvcore::Image$new(
-                options=options,
-                name="scalePlot",
-                title="Estimates plot",
-                width=800,
-                height=500,
-                visible=FALSE,
-                renderFun=".scalePlot")
+            private$..mainTitle <- R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    rel = function() private$..rel,
+                    tableTitle = function() private$..tableTitle,
+                    networkPlot = function() private$..networkPlot,
+                    scalePlot = function() private$..scalePlot,
+                    misfitTable = function() private$..misfitTable),
+                private = list(
+                    ..rel = NA,
+                    ..tableTitle = NA,
+                    ..networkPlot = NA,
+                    ..scalePlot = NA,
+                    ..misfitTable = NA),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="mainTitle",
+                            title="Bradley-Terry-Luce model")
+                        private$..rel <- jmvcore::Preformatted$new(
+                            options=options,
+                            name="rel",
+                            title="Scale Separation Reliability",
+                            visible=FALSE)
+                        private$..tableTitle <- R6::R6Class(
+                            inherit = jmvcore::Group,
+                            active = list(
+                                table = function() private$..table),
+                            private = list(
+                                ..table = NA),
+                            public=list(
+                                initialize=function(options) {
+                                    super$initialize(
+                                        options=options,
+                                        name="tableTitle",
+                                        title="Estimates")
+                                    private$..table <- jmvcore::Table$new(
+                                        options=options,
+                                        name="table",
+                                        title="Estimates",
+                                        clearWith=list(
+                                            "Repr1",
+                                            "Repr2",
+                                            "Selected",
+                                            "Judge",
+                                            "estIters",
+                                            "epsCor"),
+                                        columns=list(
+                                            list(
+                                                `name`="RankNo", 
+                                                `title`="Rank Number", 
+                                                `type`="integer"),
+                                            list(
+                                                `name`="Repr", 
+                                                `title`="Representation", 
+                                                `type`="text"),
+                                            list(
+                                                `name`="Ability", 
+                                                `title`="Ability", 
+                                                `type`="number"),
+                                            list(
+                                                `name`="se", 
+                                                `title`="se", 
+                                                `type`="number")))
+                                    self$add(private$..table)}))$new(options=options)
+                        private$..networkPlot <- jmvcore::Image$new(
+                            options=options,
+                            name="networkPlot",
+                            title="Comparisons plot",
+                            visible=FALSE,
+                            renderFun=".netPlot")
+                        private$..scalePlot <- jmvcore::Image$new(
+                            options=options,
+                            name="scalePlot",
+                            title="Estimates plot",
+                            width=800,
+                            height=500,
+                            visible=FALSE,
+                            renderFun=".scalePlot")
+                        private$..misfitTable <- R6::R6Class(
+                            inherit = jmvcore::Group,
+                            active = list(
+                                judgeMisfit = function() private$..judgeMisfit,
+                                reprMisfit = function() private$..reprMisfit),
+                            private = list(
+                                ..judgeMisfit = NA,
+                                ..reprMisfit = NA),
+                            public=list(
+                                initialize=function(options) {
+                                    super$initialize(
+                                        options=options,
+                                        name="misfitTable",
+                                        title="Misfit")
+                                    private$..judgeMisfit <- jmvcore::Table$new(
+                                        options=options,
+                                        name="judgeMisfit",
+                                        title="Judges",
+                                        visible=FALSE,
+                                        clearWith=list(
+                                            "Repr1",
+                                            "Repr2",
+                                            "Selected",
+                                            "Judge",
+                                            "estIters",
+                                            "epsCor",
+                                            "misfit"),
+                                        columns=list(
+                                            list(
+                                                `name`="Judge", 
+                                                `title`="Judge", 
+                                                `type`="text"),
+                                            list(
+                                                `name`="Flag", 
+                                                `title`="Flag", 
+                                                `type`="text")))
+                                    private$..reprMisfit <- jmvcore::Table$new(
+                                        options=options,
+                                        name="reprMisfit",
+                                        title="Representations",
+                                        visible=FALSE,
+                                        clearWith=list(
+                                            "Repr1",
+                                            "Repr2",
+                                            "Selected",
+                                            "Judge",
+                                            "estIters",
+                                            "epsCor",
+                                            "misfit"),
+                                        columns=list(
+                                            list(
+                                                `name`="Repr", 
+                                                `title`="Representation", 
+                                                `type`="text"),
+                                            list(
+                                                `name`="Flag", 
+                                                `title`="Flag", 
+                                                `type`="text")))
+                                    self$add(private$..judgeMisfit)
+                                    self$add(private$..reprMisfit)}))$new(options=options)
+                        self$add(private$..rel)
+                        self$add(private$..tableTitle)
+                        self$add(private$..networkPlot)
+                        self$add(private$..scalePlot)
+                        self$add(private$..misfitTable)}))$new(options=options)
             self$add(private$..debugText)
             self$add(private$..text)
-            self$add(private$..mainTitle)
-            self$add(private$..rel)
-            self$add(private$..tableTitle)
-            self$add(private$..table)
-            self$add(private$..networkPlot)
-            self$add(private$..scalePlot)}))
+            self$add(private$..mainTitle)}))
 
 BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "BTLanalysisBase",
@@ -243,23 +327,17 @@ BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param plotGraph .
 #' @param plotScale .
 #' @param misfit .
+#' @param flagBound .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$mainTitle} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$rel} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$tableTitle} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$networkPlot} \tab \tab \tab \tab \tab an image \cr
-#'   \code{results$scalePlot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$mainTitle$rel} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$mainTitle$tableTitle} \tab \tab \tab \tab \tab a group \cr
+#'   \code{results$mainTitle$networkPlot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$mainTitle$scalePlot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$mainTitle$misfitTable} \tab \tab \tab \tab \tab a group \cr
 #' }
-#'
-#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
-#'
-#' \code{results$table$asDF}
-#'
-#' \code{as.data.frame(results$table)}
 #'
 #' @export
 BTLanalysis <- function(
@@ -273,7 +351,8 @@ BTLanalysis <- function(
     rel = FALSE,
     plotGraph = FALSE,
     plotScale = FALSE,
-    misfit) {
+    misfit,
+    flagBound = 2) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('BTLanalysis requires jmvcore to be installed (restart may be required)')
@@ -288,7 +367,8 @@ BTLanalysis <- function(
         rel = rel,
         plotGraph = plotGraph,
         plotScale = plotScale,
-        misfit = misfit)
+        misfit = misfit,
+        flagBound = flagBound)
 
     results <- BTLanalysisResults$new(
         options = options)

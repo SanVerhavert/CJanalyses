@@ -64,3 +64,10 @@ children:
     children:
       - type: ComboBox
         name: misfit
+  - type: LayoutBox
+    margin: large
+    children:
+      - type: TextBox
+        name: flagBound
+        format: number
+        inputPattern: '[0-9]+'

@@ -36,7 +36,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       Data <- calcScore( Data = Data )
       #---------------------------------------------------------------------
       
-      image <- self$results$networkPlot
+      image <- self$results$mainTitle$networkPlot
       image$setState( Score2igraph( Data[ , 2:4] ) )
       
       # Estimate (core analysis) ----
@@ -75,7 +75,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       #---------------------------------------------------------------------
       
       # Results output ----
-      Table <- self$results$table
+      Table <- self$results$mainTitle$tableTitle$table
       
       # sort Abil
       Abil <- Abil[ order( Abil$Ability, Abil$Ability ), ]
@@ -96,34 +96,139 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       # reliability ----
       if( self$options$rel )
       {
-        self$results$rel$setVisible( visible = TRUE )
+        self$results$mainTitle$rel$setVisible( visible = TRUE )
         
         relText <- paste0( "SSR = ", round( reliability( Abildf = Abil ),
                                             digits = 3 ) )
         
-        self$results$rel$setContent( relText )
+        self$results$mainTitle$rel$setContent( relText )
         
-      } else self$results$rel$setVisible( visible = FALSE )
+      } else self$results$mainTitle$rel$setVisible( visible = FALSE )
+      
+      # Misfits ----
+      if( self$options$misfit != "none" )
+      {
+        misfitGroup <- self$results$mainTitle$misfitTable
+        misfitGroup$setVisible( visible = TRUE )
+        
+        misfitGroup$setTitle( self$options$misfit )
+      
+        judgeMisfitTable <- misfitGroup$judgeMisfit
+        reprMisfitTable <- misfitGroup$reprMisfit
+        
+        judgeMisfitTable$setVisible( visible = TRUE )
+        reprMisfitTable$setVisible( visible = TRUE )
+      } else if( self$results$mainTitle$misfitTable$visible )
+      {
+        misfitGroup$judgeMisfit$setVisible( visible = FALSE )
+        misfitGroup$reprMisfit$setVisible( visible = FALSE )
+      }  
+      
+      if( self$options$misfit == "Infit" )
+      {
+        judgeMisfit <- Rasch.misfit( Data = Data, Abil = Abil,
+                                     By.Judge = T,
+                                     boundCalc = self$options$flagBound )
+        reprMisfit <- Rasch.misfit( Data = Data, Abil = Abil,
+                                     By.Judge = F,
+                                     boundCalc = self$options$flagBound )
+        
+        judgeMisfit.stats <- judgeMisfit$misfit.stats
+        reprMisfit.stats <- reprMisfit$misfit.stats
+        
+        judgeMisfit <- judgeMisfit$misfit
+        reprMisfit <- reprMisfit$misfit
+        self$results$debugText$setContent( judgeMisfit.stats["sd"] )
+        judgeMisfit$Infit <- ( judgeMisfit$Infit - judgeMisfit.stats["mean"] ) /
+                                  judgeMisfit.stats["sd"]
+        reprMisfit$Infit <- ( reprMisfit$Infit - reprMisfit.stats["mean"] ) /
+                                  reprMisfit.stats["sd"]
+        # 
+        judgeMisfitTable$addColumn( name = "Infit", index = 2, type = "number" )
+        reprMisfitTable$addColumn( name = "Infit", index = 2, type = "number" )
+        
+        for( i in 1:nrow( judgeMisfit ) )
+        {
+          judgeMisfitTable$addRow( rowKey = i,
+                                   values = list(
+                                     Judge = as.character( judgeMisfit$Judge[i] ),
+                                     Infit = judgeMisfit$Infit[i],
+                                     Flag = judgeMisfit$Flag[i]
+                                   )
+          )
+        }
+        rm(i)
+        
+        for( i in 1:nrow( reprMisfit ) )
+        {
+          reprMisfitTable$addRow( rowKey = i,
+                                  values = list(
+                                    Repr = as.character( reprMisfit$Repr[i] ),
+                                    Infit = reprMisfit$Infit[i],
+                                    Flag = reprMisfit$Flag[i]
+                                  )
+          )
+        }
+        rm(i)
+        
+      } else if ( self$options$misfit == "Lz" )
+      {
+        judgeMisfit <- Lz.misfit( Data = Data, Abil = Abil,
+                                   By.Judge = T,
+                                  flagBound = (self$options$flagBound * -1) )
+        reprMisfit <- Lz.misfit( Data = Data, Abil = Abil,
+                                  By.Judge = F,
+                                 flagBound = self$options$flagBound * -1 )
+        
+        judgeMisfitTable$addColumn( name = "Lz", index = 2, type = "number" )
+        reprMisfitTable$addColumn( name = "Lz", index = 2, type = "number" )
+        
+        for( i in 1:nrow( judgeMisfit ) )
+        {
+          judgeMisfitTable$addRow( rowKey = i,
+                                   values = list(
+                                     Judge = as.character( judgeMisfit$Judge[i] ),
+                                     Lz = judgeMisfit$Lz_Misfit[i],
+                                     Flag = judgeMisfit$Flag[i]
+                                   )
+          )
+        }
+        rm(i)
+        
+        for( i in 1:nrow( reprMisfit ) )
+        {
+          reprMisfitTable$addRow( rowKey = i,
+                                  values = list(
+                                    Repr = as.character( reprMisfit$Repr[i] ),
+                                    Lz = reprMisfit$Lz_Misfit[i],
+                                    Flag = reprMisfit$Flag[i]
+                                  )
+          )
+        }
+        rm(i)
+      }
+      
+      
       
       #-------------------------------------------------------------------------
       
       # preparations for plots ----
-      self$results$table$setState( Abil )
+      Table$setState( Abil )
       
       if( self$options$plotGraph )
       {
-        self$results$networkPlot$setVisible( visible = TRUE )
+        self$results$mainTitle$networkPlot$setVisible( visible = TRUE )
       } else
       {
-        self$results$networkPlot$setVisible( visible = FALSE )
+        self$results$mainTitle$networkPlot$setVisible( visible = FALSE )
       }
       
       if( self$options$plotScale )
       {
-        self$results$scalePlot$setVisible( visible = TRUE )
+        self$results$mainTitle$scalePlot$setVisible( visible = TRUE )
       } else
       {
-        self$results$scalePlot$setVisible( visible = FALSE )
+        self$results$mainTitle$scalePlot$setVisible( visible = FALSE )
       }
       
     },
@@ -134,7 +239,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         
         graphDat <- graph_from_data_frame( d = Data )
         
-        res <- self$results$table$state
+        res <- self$results$mainTitle$tableTitle$table$state
         
         plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
         plotCol <- plotCol( length( res$Repr) )
@@ -145,7 +250,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         TRUE
     },
     .scalePlot = function( image, ...) {
-      Ability <- self$results$table$state
+      Ability <- self$results$mainTitle$tableTitle$table$state
       
       yMax <- max( Ability$Ability ) + 2 * max( Ability$se )
       yMin <- min( Ability$Ability ) - 2 * max( Ability$se )

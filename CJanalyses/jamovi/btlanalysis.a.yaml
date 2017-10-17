@@ -60,3 +60,9 @@ options:
       title: Misfit
       options: [ none, Infit, Lz ]
       type: List
+      
+    - name: flagBound
+      title: Misfit Cutoff
+      type: Integer
+      min: 0
+      default: 2
