@@ -91,6 +91,10 @@ items:
             - misfit
         
           columns:
+            - name: id
+              title: id
+              type: integer
+              
             - name: Judge
               title: Judge
               type: text
@@ -99,6 +103,14 @@ items:
               title: Flag
               type: text
           
+        - name: judgePlot
+          title: Misfit Judges plot
+          type: Image
+          width: 800
+          height: 500
+          visible: false
+          renderFun: .JudgePlot
+        
         - name: reprMisfit
           title: Representations
           type: Table
@@ -114,6 +126,10 @@ items:
             - misfit
         
           columns:
+            - name: id
+              title: id
+              type: integer
+              
             - name: Repr
               title: Representation
               type: text
@@ -121,4 +137,12 @@ items:
             - name: Flag
               title: Flag
               type: text
+              
+        - name: reprPlot
+          title: Misfit Representations plot
+          type: Image
+          width: 800
+          height: 500
+          visible: false
+          renderFun: .ReprPlot
             

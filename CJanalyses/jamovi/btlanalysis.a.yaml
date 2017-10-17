@@ -66,3 +66,8 @@ options:
       type: Integer
       min: 0
       default: 2
+      
+    - name: misfitPlot
+      title: Misfit plot
+      type: Bool
+      default: false

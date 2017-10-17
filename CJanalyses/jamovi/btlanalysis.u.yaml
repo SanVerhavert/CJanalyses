@@ -71,3 +71,8 @@ children:
         name: flagBound
         format: number
         inputPattern: '[0-9]+'
+  - type: LayoutBox
+    margin: large
+    children:
+      - type: CheckBox
+        name: misfitPlot

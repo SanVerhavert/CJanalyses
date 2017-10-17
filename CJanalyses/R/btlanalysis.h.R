@@ -16,7 +16,8 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             plotGraph = FALSE,
             plotScale = FALSE,
             misfit = NULL,
-            flagBound = 2, ...) {
+            flagBound = 2,
+            misfitPlot = FALSE, ...) {
 
             super$initialize(
                 package='CJanalyses',
@@ -82,6 +83,10 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 flagBound,
                 min=0,
                 default=2)
+            private$..misfitPlot <- jmvcore::OptionBool$new(
+                "misfitPlot",
+                misfitPlot,
+                default=FALSE)
         
             self$.addOption(private$..Repr1)
             self$.addOption(private$..Repr2)
@@ -94,6 +99,7 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             self$.addOption(private$..plotScale)
             self$.addOption(private$..misfit)
             self$.addOption(private$..flagBound)
+            self$.addOption(private$..misfitPlot)
         }),
     active = list(
         Repr1 = function() private$..Repr1$value,
@@ -106,7 +112,8 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         plotGraph = function() private$..plotGraph$value,
         plotScale = function() private$..plotScale$value,
         misfit = function() private$..misfit$value,
-        flagBound = function() private$..flagBound$value),
+        flagBound = function() private$..flagBound$value,
+        misfitPlot = function() private$..misfitPlot$value),
     private = list(
         ..Repr1 = NA,
         ..Repr2 = NA,
@@ -118,7 +125,8 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         ..plotGraph = NA,
         ..plotScale = NA,
         ..misfit = NA,
-        ..flagBound = NA)
+        ..flagBound = NA,
+        ..misfitPlot = NA)
 )
 
 BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
@@ -229,10 +237,14 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                             inherit = jmvcore::Group,
                             active = list(
                                 judgeMisfit = function() private$..judgeMisfit,
-                                reprMisfit = function() private$..reprMisfit),
+                                judgePlot = function() private$..judgePlot,
+                                reprMisfit = function() private$..reprMisfit,
+                                reprPlot = function() private$..reprPlot),
                             private = list(
                                 ..judgeMisfit = NA,
-                                ..reprMisfit = NA),
+                                ..judgePlot = NA,
+                                ..reprMisfit = NA,
+                                ..reprPlot = NA),
                             public=list(
                                 initialize=function(options) {
                                     super$initialize(
@@ -254,6 +266,10 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                             "misfit"),
                                         columns=list(
                                             list(
+                                                `name`="id", 
+                                                `title`="id", 
+                                                `type`="integer"),
+                                            list(
                                                 `name`="Judge", 
                                                 `title`="Judge", 
                                                 `type`="text"),
@@ -261,6 +277,14 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                                 `name`="Flag", 
                                                 `title`="Flag", 
                                                 `type`="text")))
+                                    private$..judgePlot <- jmvcore::Image$new(
+                                        options=options,
+                                        name="judgePlot",
+                                        title="Misfit Judges plot",
+                                        width=800,
+                                        height=500,
+                                        visible=FALSE,
+                                        renderFun=".JudgePlot")
                                     private$..reprMisfit <- jmvcore::Table$new(
                                         options=options,
                                         name="reprMisfit",
@@ -276,6 +300,10 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                             "misfit"),
                                         columns=list(
                                             list(
+                                                `name`="id", 
+                                                `title`="id", 
+                                                `type`="integer"),
+                                            list(
                                                 `name`="Repr", 
                                                 `title`="Representation", 
                                                 `type`="text"),
@@ -283,8 +311,18 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                                 `name`="Flag", 
                                                 `title`="Flag", 
                                                 `type`="text")))
+                                    private$..reprPlot <- jmvcore::Image$new(
+                                        options=options,
+                                        name="reprPlot",
+                                        title="Misfit Representations plot",
+                                        width=800,
+                                        height=500,
+                                        visible=FALSE,
+                                        renderFun=".ReprPlot")
                                     self$add(private$..judgeMisfit)
-                                    self$add(private$..reprMisfit)}))$new(options=options)
+                                    self$add(private$..judgePlot)
+                                    self$add(private$..reprMisfit)
+                                    self$add(private$..reprPlot)}))$new(options=options)
                         self$add(private$..rel)
                         self$add(private$..tableTitle)
                         self$add(private$..networkPlot)
@@ -328,6 +366,7 @@ BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param plotScale .
 #' @param misfit .
 #' @param flagBound .
+#' @param misfitPlot .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
@@ -352,7 +391,8 @@ BTLanalysis <- function(
     plotGraph = FALSE,
     plotScale = FALSE,
     misfit,
-    flagBound = 2) {
+    flagBound = 2,
+    misfitPlot = FALSE) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('BTLanalysis requires jmvcore to be installed (restart may be required)')
@@ -368,7 +408,8 @@ BTLanalysis <- function(
         plotGraph = plotGraph,
         plotScale = plotScale,
         misfit = misfit,
-        flagBound = flagBound)
+        flagBound = flagBound,
+        misfitPlot = misfitPlot)
 
     results <- BTLanalysisResults$new(
         options = options)

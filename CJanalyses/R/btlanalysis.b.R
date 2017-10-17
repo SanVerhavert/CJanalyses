@@ -112,16 +112,19 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         misfitGroup$setVisible( visible = TRUE )
         
         misfitGroup$setTitle( self$options$misfit )
-      
+        
         judgeMisfitTable <- misfitGroup$judgeMisfit
         reprMisfitTable <- misfitGroup$reprMisfit
-        
+     
         judgeMisfitTable$setVisible( visible = TRUE )
         reprMisfitTable$setVisible( visible = TRUE )
+        
       } else if( self$results$mainTitle$misfitTable$visible )
       {
         misfitGroup$judgeMisfit$setVisible( visible = FALSE )
         misfitGroup$reprMisfit$setVisible( visible = FALSE )
+        misfitGroup$judgePlot$setVisible( FALSE )
+        misfitGroup$reprPlot$setVisible( FALSE )
       }  
       
       if( self$options$misfit == "Infit" )
@@ -138,19 +141,20 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         
         judgeMisfit <- judgeMisfit$misfit
         reprMisfit <- reprMisfit$misfit
-        self$results$debugText$setContent( judgeMisfit.stats["sd"] )
+        
         judgeMisfit$Infit <- ( judgeMisfit$Infit - judgeMisfit.stats["mean"] ) /
                                   judgeMisfit.stats["sd"]
         reprMisfit$Infit <- ( reprMisfit$Infit - reprMisfit.stats["mean"] ) /
                                   reprMisfit.stats["sd"]
-        # 
-        judgeMisfitTable$addColumn( name = "Infit", index = 2, type = "number" )
-        reprMisfitTable$addColumn( name = "Infit", index = 2, type = "number" )
+         
+        judgeMisfitTable$addColumn( name = "Infit", index = 3, type = "number" )
+        reprMisfitTable$addColumn( name = "Infit", index = 3, type = "number" )
         
         for( i in 1:nrow( judgeMisfit ) )
         {
           judgeMisfitTable$addRow( rowKey = i,
                                    values = list(
+                                     id = i,
                                      Judge = as.character( judgeMisfit$Judge[i] ),
                                      Infit = judgeMisfit$Infit[i],
                                      Flag = judgeMisfit$Flag[i]
@@ -163,6 +167,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         {
           reprMisfitTable$addRow( rowKey = i,
                                   values = list(
+                                    id = i,
                                     Repr = as.character( reprMisfit$Repr[i] ),
                                     Infit = reprMisfit$Infit[i],
                                     Flag = reprMisfit$Flag[i]
@@ -180,13 +185,14 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                                   By.Judge = F,
                                  flagBound = self$options$flagBound * -1 )
         
-        judgeMisfitTable$addColumn( name = "Lz", index = 2, type = "number" )
-        reprMisfitTable$addColumn( name = "Lz", index = 2, type = "number" )
+        judgeMisfitTable$addColumn( name = "Lz", index = 3, type = "number" )
+        reprMisfitTable$addColumn( name = "Lz", index = 3, type = "number" )
         
         for( i in 1:nrow( judgeMisfit ) )
         {
           judgeMisfitTable$addRow( rowKey = i,
                                    values = list(
+                                     id = i,
                                      Judge = as.character( judgeMisfit$Judge[i] ),
                                      Lz = judgeMisfit$Lz_Misfit[i],
                                      Flag = judgeMisfit$Flag[i]
@@ -199,6 +205,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         {
           reprMisfitTable$addRow( rowKey = i,
                                   values = list(
+                                    id = i,
                                     Repr = as.character( reprMisfit$Repr[i] ),
                                     Lz = reprMisfit$Lz_Misfit[i],
                                     Flag = reprMisfit$Flag[i]
@@ -208,7 +215,21 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         rm(i)
       }
       
-      
+      if( self$options$misfit != "none" )
+      {
+        judgeMisfitTable$setState( judgeMisfit )
+        reprMisfitTable$setState( reprMisfit )
+        
+        if( self$options$misfitPlot )
+        {
+          misfitGroup$judgePlot$setVisible( TRUE )
+          misfitGroup$reprPlot$setVisible( TRUE )
+        } else
+        {
+          misfitGroup$judgePlot$setVisible( FALSE )
+          misfitGroup$reprPlot$setVisible( FALSE )
+        }
+      }
       
       #-------------------------------------------------------------------------
       
@@ -264,6 +285,68 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       axis( side = 1, at = 1:length( Ability$Repr ) )
       errbar( 1:length( Ability$Repr ), Ability$Ability,
               height = 2 * Ability$se, width = .05, col = plotCol )
+      
+      TRUE
+    },
+    .JudgePlot = function( image, ... ) {
+      misfit <- self$results$mainTitle$misfitTable$judgeMisfit$state
+      
+      plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
+      plotCol <- plotCol( length( misfit$Judge) )
+      
+      if( self$options$misfit == "Infit" )
+      {
+        ymin <- min( misfit$Infit ) - 0.5
+        
+        ymax <- max( max( misfit$Infit ) + 0.5, self$options$flagBound + 0.5 )
+        
+        plot( 1:length( misfit$Judge ), misfit$Infit, xlab = "Judge",
+              ylab = "Infit", ylim = c( ymin, ymax ),
+              col = plotCol )
+        abline( h = self$options$flagBound, col = "red" )
+      } else if( self$options$misfit == "Lz" )
+      {
+        ymin <- min( min( misfit$Lz ) - 0.5,
+                     ( self$options$flagBound * -1 ) - 0.5 )
+        
+        ymax <- max( misfit$Lz ) + 0.5
+        
+        plot( 1:length( misfit$Judge ), misfit$Lz, xlab = "Judge",
+              ylab = "Lz", ylim = c( ymin, ymax ),
+              col = plotCol )
+        abline( h = self$options$flagBound * -1, col = "red" )
+      }
+      
+      TRUE
+    },
+    .ReprPlot = function( image, ... ) {
+      misfit <- self$results$mainTitle$misfitTable$reprMisfit$state
+      
+      plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
+      plotCol <- plotCol( length( misfit$Repr) )
+      
+      if( self$options$misfit == "Infit" )
+      {
+        ymin <- min( misfit$Infit ) - 0.5
+        
+        ymax <- max( max( misfit$Infit ) + 0.5, self$options$flagBound + 0.5 )
+        
+        plot( 1:length( misfit$Repr ), misfit$Infit, xlab = "Representation",
+              ylab = "Infit", ylim = c( ymin, ymax ),
+              col = plotCol )
+        abline( h = self$options$flagBound, col = "red" )
+      } else if( self$options$misfit == "Lz" )
+      {
+        ymin <- min( min( misfit$Lz ) - 0.5,
+                     ( self$options$flagBound * -1 ) - 0.5 )
+        
+        ymax <- max( misfit$Lz ) + 0.5
+        
+        plot( 1:length( misfit$Repr ), misfit$Lz, xlab = "Representation",
+              ylab = "Lz", ylim = c( ymin, ymax ),
+              col = plotCol )
+        abline( h = self$options$flagBound * -1, col = "red" )
+      }
       
       TRUE
     } )
