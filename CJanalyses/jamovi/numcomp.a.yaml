@@ -1,6 +1,6 @@
 ---
 name:  numComp
-title: numComp
+title: Number of Comparisons
 menuGroup: CJanalyses
 version: '1.0.0'
 jas: '1.1'
@@ -9,28 +9,32 @@ options:
     - name: data
       type: Data
 
-    - name: dep
-      title: Dependent Variable
+    - name: Repr1
+      title: Representation 1
       type: Variable
-
-    - name: group
-      title: Grouping Variable
+      permitted: [nominal, nominaltext]
+    
+    - name: Repr2
+      title: Representation 2
       type: Variable
-
-    - name: alt
-      title: Alternative hypothesis
-      type: List
-      options:
-        - title: Not equal
-          name:  notequal
-        - title: One greater
-          name:  onegreater
-        - title: Two greater
-          name:  twogreater
-      default: notequal
-
-    - name: varEq
-      title: Assume equal variances
+      permitted: [nominal, nominaltext]
+      
+    - name: Selected
+      title: Selected
+      type: Variable
+      permitted: [nominal, nominaltext]
+      
+    - name: Judge
+      title: Judge
+      type: Variable
+      permitted: [nominal, nominaltext]
+      
+    - name: byJudge
+      title: By Judge
       type: Bool
-      default: true
-...
+      default: FALSE
+      
+    - name: byRepr
+      title: By Representation
+      type: Bool
+      default: FALSE
