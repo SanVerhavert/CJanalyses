@@ -17,5 +17,10 @@ analyses:
     ns: CJanalyses
     menuGroup: CJanalyses
     menuTitle: Bradley-Terry-Luce model and statistics
+  - title: numComp
+    name: numComp
+    ns: CJanalyses
+    menuGroup: CJanalyses
+    menuTitle: numComp
 
 ...

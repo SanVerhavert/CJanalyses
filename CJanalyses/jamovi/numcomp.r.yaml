@@ -1,0 +1,11 @@
+---
+name:  numComp
+title: numComp
+jrs:   '1.1'
+
+items:
+    - name:  text
+      title: numComp
+      type:  Preformatted
+
+...
