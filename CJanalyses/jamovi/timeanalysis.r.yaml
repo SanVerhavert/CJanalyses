@@ -1,0 +1,11 @@
+---
+name:  timeAnalysis
+title: timeAnalysis
+jrs:   '1.1'
+
+items:
+    - name:  text
+      title: timeAnalysis
+      type:  Preformatted
+
+...
