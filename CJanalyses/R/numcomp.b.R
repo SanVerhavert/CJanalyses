@@ -30,6 +30,8 @@ numCompClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           Data$Repr2 <- as.character( Data$Repr2 )
           Data$Selected <- as.character( Data$Selected )
           
+          Data <- na.omit( Data )
+          
           #---------------------------------------------------------------------
           # Calculate Score ----
           # will eventually be removed when jamovi functionality is expanded

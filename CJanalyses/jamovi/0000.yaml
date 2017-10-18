@@ -22,10 +22,10 @@ analyses:
     ns: CJanalyses
     menuGroup: CJanalyses
     menuTitle: Number of Comparisons
-  - title: seenByJudge
+  - title: Representation seen by judge
     name: seenByJudge
     ns: CJanalyses
     menuGroup: CJanalyses
-    menuTitle: seenByJudge
+    menuTitle: Representation seen by judge
 
 ...

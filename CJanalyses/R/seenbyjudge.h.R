@@ -6,10 +6,9 @@ seenByJudgeOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
-            dep = NULL,
-            group = NULL,
-            alt = "notequal",
-            varEq = TRUE, ...) {
+            Repr1 = NULL,
+            Repr2 = NULL,
+            Judge = NULL, ...) {
 
             super$initialize(
                 package='CJanalyses',
@@ -17,59 +16,73 @@ seenByJudgeOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 requiresData=TRUE,
                 ...)
         
-            private$..dep <- jmvcore::OptionVariable$new(
-                "dep",
-                dep)
-            private$..group <- jmvcore::OptionVariable$new(
-                "group",
-                group)
-            private$..alt <- jmvcore::OptionList$new(
-                "alt",
-                alt,
-                options=list(
-                    "notequal",
-                    "onegreater",
-                    "twogreater"),
-                default="notequal")
-            private$..varEq <- jmvcore::OptionBool$new(
-                "varEq",
-                varEq,
-                default=TRUE)
+            private$..Repr1 <- jmvcore::OptionVariable$new(
+                "Repr1",
+                Repr1,
+                permitted=list(
+                    "nominal",
+                    "nominaltext"))
+            private$..Repr2 <- jmvcore::OptionVariable$new(
+                "Repr2",
+                Repr2,
+                permitted=list(
+                    "nominal",
+                    "nominaltext"))
+            private$..Judge <- jmvcore::OptionVariable$new(
+                "Judge",
+                Judge,
+                permitted=list(
+                    "nominal",
+                    "nominaltext"))
         
-            self$.addOption(private$..dep)
-            self$.addOption(private$..group)
-            self$.addOption(private$..alt)
-            self$.addOption(private$..varEq)
+            self$.addOption(private$..Repr1)
+            self$.addOption(private$..Repr2)
+            self$.addOption(private$..Judge)
         }),
     active = list(
-        dep = function() private$..dep$value,
-        group = function() private$..group$value,
-        alt = function() private$..alt$value,
-        varEq = function() private$..varEq$value),
+        Repr1 = function() private$..Repr1$value,
+        Repr2 = function() private$..Repr2$value,
+        Judge = function() private$..Judge$value),
     private = list(
-        ..dep = NA,
-        ..group = NA,
-        ..alt = NA,
-        ..varEq = NA)
+        ..Repr1 = NA,
+        ..Repr2 = NA,
+        ..Judge = NA)
 )
 
 seenByJudgeResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
-        text = function() private$..text),
+        debugText = function() private$..debugText,
+        table = function() private$..table),
     private = list(
-        ..text = NA),
+        ..debugText = NA,
+        ..table = NA),
     public=list(
         initialize=function(options) {
             super$initialize(
                 options=options,
                 name="",
-                title="seenByJudge")
-            private$..text <- jmvcore::Preformatted$new(
+                title="Representation seen by judge")
+            private$..debugText <- jmvcore::Preformatted$new(
                 options=options,
-                name="text",
-                title="seenByJudge")
-            self$add(private$..text)}))
+                name="debugText",
+                title="Debug",
+                visible=TRUE)
+            private$..table <- jmvcore::Table$new(
+                options=options,
+                name="table",
+                title="Counts",
+                clearWith=list(
+                    "Repr1",
+                    "Repr2",
+                    "Judge"),
+                columns=list(
+                    list(
+                        `name`="Judge", 
+                        `title`="Judge", 
+                        `type`="text")))
+            self$add(private$..debugText)
+            self$add(private$..table)}))
 
 seenByJudgeBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "seenByJudgeBase",
@@ -90,35 +103,39 @@ seenByJudgeBase <- if (requireNamespace('jmvcore')) R6::R6Class(
                 completeWhenFilled = FALSE)
         }))
 
-#' seenByJudge
+#' Representation seen by judge
 #'
 #' 
 #' @param data .
-#' @param dep .
-#' @param group .
-#' @param alt .
-#' @param varEq .
+#' @param Repr1 .
+#' @param Repr2 .
+#' @param Judge .
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$table$asDF}
+#'
+#' \code{as.data.frame(results$table)}
 #'
 #' @export
 seenByJudge <- function(
     data,
-    dep,
-    group,
-    alt = "notequal",
-    varEq = TRUE) {
+    Repr1,
+    Repr2,
+    Judge) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('seenByJudge requires jmvcore to be installed (restart may be required)')
 
     options <- seenByJudgeOptions$new(
-        dep = dep,
-        group = group,
-        alt = alt,
-        varEq = varEq)
+        Repr1 = Repr1,
+        Repr2 = Repr2,
+        Judge = Judge)
 
     results <- seenByJudgeResults$new(
         options = options)
