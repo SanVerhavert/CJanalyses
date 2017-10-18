@@ -6,10 +6,8 @@ timeAnalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
-            dep = NULL,
-            group = NULL,
-            alt = "notequal",
-            varEq = TRUE, ...) {
+            duration = NULL,
+            Judge = NULL, ...) {
 
             super$initialize(
                 package='CJanalyses',
@@ -17,59 +15,123 @@ timeAnalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 requiresData=TRUE,
                 ...)
         
-            private$..dep <- jmvcore::OptionVariable$new(
-                "dep",
-                dep)
-            private$..group <- jmvcore::OptionVariable$new(
-                "group",
-                group)
-            private$..alt <- jmvcore::OptionList$new(
-                "alt",
-                alt,
-                options=list(
-                    "notequal",
-                    "onegreater",
-                    "twogreater"),
-                default="notequal")
-            private$..varEq <- jmvcore::OptionBool$new(
-                "varEq",
-                varEq,
-                default=TRUE)
+            private$..duration <- jmvcore::OptionVariable$new(
+                "duration",
+                duration,
+                permitted=list(
+                    "continuous"))
+            private$..Judge <- jmvcore::OptionVariable$new(
+                "Judge",
+                Judge)
         
-            self$.addOption(private$..dep)
-            self$.addOption(private$..group)
-            self$.addOption(private$..alt)
-            self$.addOption(private$..varEq)
+            self$.addOption(private$..duration)
+            self$.addOption(private$..Judge)
         }),
     active = list(
-        dep = function() private$..dep$value,
-        group = function() private$..group$value,
-        alt = function() private$..alt$value,
-        varEq = function() private$..varEq$value),
+        duration = function() private$..duration$value,
+        Judge = function() private$..Judge$value),
     private = list(
-        ..dep = NA,
-        ..group = NA,
-        ..alt = NA,
-        ..varEq = NA)
+        ..duration = NA,
+        ..Judge = NA)
 )
 
 timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
-        text = function() private$..text),
+        debugText = function() private$..debugText,
+        judge = function() private$..judge),
     private = list(
-        ..text = NA),
+        ..debugText = NA,
+        ..judge = NA),
     public=list(
         initialize=function(options) {
             super$initialize(
                 options=options,
                 name="",
-                title="timeAnalysis")
-            private$..text <- jmvcore::Preformatted$new(
+                title="Time Analysis")
+            private$..debugText <- jmvcore::Preformatted$new(
                 options=options,
-                name="text",
-                title="timeAnalysis")
-            self$add(private$..text)}))
+                name="debugText",
+                title="Debug",
+                visible=FALSE)
+            private$..judge <- R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    table = function() private$..table),
+                private = list(
+                    ..table = NA),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="judge",
+                            title="")
+                        private$..table <- R6::R6Class(
+                            inherit = jmvcore::Group,
+                            active = list(
+                                general = function() private$..general,
+                                split = function() private$..split),
+                            private = list(
+                                ..general = NA,
+                                ..split = NA),
+                            public=list(
+                                initialize=function(options) {
+                                    super$initialize(
+                                        options=options,
+                                        name="table",
+                                        title="")
+                                    private$..general <- jmvcore::Table$new(
+                                        options=options,
+                                        name="general",
+                                        columns=list(
+                                            list(
+                                                `name`="mean", 
+                                                `title`="Mean", 
+                                                `type`="number"),
+                                            list(
+                                                `name`="sd", 
+                                                `title`="sd", 
+                                                `type`="number"),
+                                            list(
+                                                `name`="min", 
+                                                `title`="Min", 
+                                                `type`="integer"),
+                                            list(
+                                                `name`="max", 
+                                                `title`="Max", 
+                                                `type`="integer")))
+                                    private$..split <- jmvcore::Table$new(
+                                        options=options,
+                                        name="split",
+                                        visible=FALSE,
+                                        clearWith=list(
+                                            "Judge"),
+                                        columns=list(
+                                            list(
+                                                `name`="judge", 
+                                                `title`="Judge", 
+                                                `type`="text"),
+                                            list(
+                                                `name`="mean", 
+                                                `title`="Mean", 
+                                                `type`="number"),
+                                            list(
+                                                `name`="sd", 
+                                                `title`="sd", 
+                                                `type`="number"),
+                                            list(
+                                                `name`="min", 
+                                                `title`="Min", 
+                                                `type`="integer"),
+                                            list(
+                                                `name`="max", 
+                                                `title`="Max", 
+                                                `type`="integer")))
+                                    self$add(private$..general)
+                                    self$add(private$..split)}))$new(options=options)
+                        self$add(private$..table)}))$new(options=options)
+            self$add(private$..debugText)
+            self$add(private$..judge)}))
 
 timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "timeAnalysisBase",
@@ -90,35 +152,30 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
                 completeWhenFilled = FALSE)
         }))
 
-#' timeAnalysis
+#' Time Analysis
 #'
 #' 
 #' @param data .
-#' @param dep .
-#' @param group .
-#' @param alt .
-#' @param varEq .
+#' @param duration .
+#' @param Judge .
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$judge$table} \tab \tab \tab \tab \tab a group \cr
 #' }
 #'
 #' @export
 timeAnalysis <- function(
     data,
-    dep,
-    group,
-    alt = "notequal",
-    varEq = TRUE) {
+    duration,
+    Judge) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('timeAnalysis requires jmvcore to be installed (restart may be required)')
 
     options <- timeAnalysisOptions$new(
-        dep = dep,
-        group = group,
-        alt = alt,
-        varEq = varEq)
+        duration = duration,
+        Judge = Judge)
 
     results <- timeAnalysisResults$new(
         options = options)

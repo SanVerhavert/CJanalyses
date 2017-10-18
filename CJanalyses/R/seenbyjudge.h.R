@@ -67,7 +67,7 @@ seenByJudgeResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 options=options,
                 name="debugText",
                 title="Debug",
-                visible=TRUE)
+                visible=FALSE)
             private$..table <- jmvcore::Table$new(
                 options=options,
                 name="table",

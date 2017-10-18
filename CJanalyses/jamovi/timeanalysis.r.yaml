@@ -1,11 +1,73 @@
 ---
 name:  timeAnalysis
-title: timeAnalysis
+title: Time Analysis
 jrs:   '1.1'
 
 items:
-    - name:  text
-      title: timeAnalysis
+    - name: debugText
+      title: Debug
       type:  Preformatted
-
-...
+      visible: FALSE
+      
+    - name: judge
+      title: ""
+      type: Group
+      items:
+        - name: table
+          title: Summary
+          type: Group
+          
+          clearWith:
+            - duration
+          
+          items:
+            - name: general
+              title: ""
+              type: Table
+                
+              columns:
+                - name: mean
+                  title: Mean
+                  type: number
+                
+                - name: sd
+                  title: sd
+                  type: number
+                  
+                - name: min
+                  title: Min
+                  type: integer
+                  
+                - name: max
+                  title: Max
+                  type: integer
+            
+            - name: split
+              type: Table
+              visible: FALSE
+              
+              clearWith:
+                - Judge
+              
+              columns:
+                - name: judge
+                  title: Judge
+                  type: text
+                
+                - name: mean
+                  title: Mean
+                  type: number
+                
+                - name: sd
+                  title: sd
+                  type: number
+                  
+                - name: min
+                  title: Min
+                  type: integer
+                  
+                - name: max
+                  title: Max
+                  type: integer
+              
+          

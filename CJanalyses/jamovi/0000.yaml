@@ -27,10 +27,10 @@ analyses:
     ns: CJanalyses
     menuGroup: CJanalyses
     menuTitle: Representation seen by judge
-  - title: timeAnalysis
+  - title: Time Analysis
     name: timeAnalysis
     ns: CJanalyses
     menuGroup: CJanalyses
-    menuTitle: timeAnalysis
+    menuTitle: Time Analysis
 
 ...

@@ -7,7 +7,7 @@ items:
     - name: debugText
       title: Debug
       type: Preformatted
-      visible: TRUE
+      visible: FALSE
     
     - name: table
       title: Counts
