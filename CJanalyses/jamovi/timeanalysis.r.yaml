@@ -22,7 +22,7 @@ items:
           
           items:
             - name: general
-              title: ""
+              title: Overall
               type: Table
                 
               columns:
@@ -51,7 +51,7 @@ items:
                   type: integer
             
             - name: split
-              title: ""
+              title: Per judge
               type: Table
               visible: FALSE
               
@@ -92,12 +92,12 @@ items:
           type: Group
           items:
             - name: general
-              title: ""
+              title: Overall
               type: Image
               renderFun: .generalPlot
               
             - name: split
-              title: ""
+              title: Per judge
               type: Image
               width: 1000
               height: 1000
