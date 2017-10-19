@@ -22,15 +22,17 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           {
             Data <- self$data[ c( duration, judge ) ]
             
-            Data <- na.omit( Data )
             
             if( self$options$filter )
             {
+              judgeFiltd <- Data[ Data[ , duration ] >= self$options$filter,
+                                  judge ]
               Data <- Data[ Data[ , duration ] <= self$options$filter, ]
-              
-              self$results$table$setTitle( paste0( "Summary: Filtered on '<=",
-                                                   self$options$filter, "'" ) )
             }
+            
+            durationFull <- Data[ , duration ]
+            
+            Data <- na.omit( Data )
             
             duration <- Data[ , duration ]
             
@@ -38,17 +40,27 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
           } else
           {
-            duration <- na.omit( durationFull )
             
             if( self$options$filter )
             {
-              duration <- duration[ duration <= self$options$filter ]
+              judgeFiltd <- judge[ durationFull <= self$options$filter ]
+              durationFull <- durationFull[ durationFull <= self$options$filter ]
               
               self$results$table$setTitle( paste0( "Summary: Filtered on '<=",
                                                    self$options$filter, "'" ) )
             }
+            
+            duration <- na.omit( durationFull )
           }
           
+          outText <- paste0( "Filtered on '<=", self$options$filter, "'!\n",
+                             "Removed ", length( judgeFiltd ),
+                             " entrie(s) for Judge(s) ",
+                             paste( unique( judgeFiltd ), sep = ", " ), "." )
+          
+          
+          self$results$talk$setContent( outText )
+            
           missLength <- length( durationFull ) - length( duration )
           
           tableGroup <- self$results$table

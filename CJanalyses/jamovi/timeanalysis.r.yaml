@@ -9,6 +9,10 @@ items:
       type:  Preformatted
       visible: TRUE
       
+    - name: talk
+      title: ""
+      type:  Preformatted
+      
     - name: table
       title: Summary
       type: Group
@@ -98,4 +102,4 @@ items:
           width: 1000
           height: 1000
           visible: false
-          renderFun: .splitPlot
+          renderFun: .judgePlot

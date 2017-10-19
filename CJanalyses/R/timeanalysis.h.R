@@ -47,10 +47,12 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         debugText = function() private$..debugText,
+        talk = function() private$..talk,
         table = function() private$..table,
         plot = function() private$..plot),
     private = list(
         ..debugText = NA,
+        ..talk = NA,
         ..table = NA,
         ..plot = NA),
     public=list(
@@ -64,6 +66,10 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 name="debugText",
                 title="Debug",
                 visible=TRUE)
+            private$..talk <- jmvcore::Preformatted$new(
+                options=options,
+                name="talk",
+                title="")
             private$..table <- R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -171,10 +177,11 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                             width=1000,
                             height=1000,
                             visible=FALSE,
-                            renderFun=".splitPlot")
+                            renderFun=".judgePlot")
                         self$add(private$..general)
                         self$add(private$..judge)}))$new(options=options)
             self$add(private$..debugText)
+            self$add(private$..talk)
             self$add(private$..table)
             self$add(private$..plot)}))
 
@@ -207,6 +214,7 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$talk} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$table$general} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$table$judge} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot$general} \tab \tab \tab \tab \tab an image \cr
