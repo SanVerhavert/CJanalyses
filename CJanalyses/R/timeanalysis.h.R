@@ -7,7 +7,8 @@ timeAnalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
     public = list(
         initialize = function(
             duration = NULL,
-            Judge = NULL, ...) {
+            Judge = NULL,
+            filter = NULL, ...) {
 
             super$initialize(
                 package='CJanalyses',
@@ -23,16 +24,23 @@ timeAnalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..Judge <- jmvcore::OptionVariable$new(
                 "Judge",
                 Judge)
+            private$..filter <- jmvcore::OptionNumber$new(
+                "filter",
+                filter,
+                min=0)
         
             self$.addOption(private$..duration)
             self$.addOption(private$..Judge)
+            self$.addOption(private$..filter)
         }),
     active = list(
         duration = function() private$..duration$value,
-        Judge = function() private$..Judge$value),
+        Judge = function() private$..Judge$value,
+        filter = function() private$..filter$value),
     private = list(
         ..duration = NA,
-        ..Judge = NA)
+        ..Judge = NA,
+        ..filter = NA)
 )
 
 timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
@@ -85,7 +93,7 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     private$..general <- jmvcore::Table$new(
                                         options=options,
                                         name="general",
-                                        title="",
+                                        title="Overall",
                                         columns=list(
                                             list(
                                                 `name`="N", 
@@ -114,7 +122,7 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     private$..split <- jmvcore::Table$new(
                                         options=options,
                                         name="split",
-                                        title="",
+                                        title="Per judge",
                                         visible=FALSE,
                                         clearWith=list(
                                             "Judge"),
@@ -166,12 +174,12 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     private$..general <- jmvcore::Image$new(
                                         options=options,
                                         name="general",
-                                        title="",
+                                        title="Overall",
                                         renderFun=".generalPlot")
                                     private$..split <- jmvcore::Image$new(
                                         options=options,
                                         name="split",
-                                        title="",
+                                        title="Per judge",
                                         width=1000,
                                         height=1000,
                                         visible=FALSE,
@@ -208,6 +216,7 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param data .
 #' @param duration .
 #' @param Judge .
+#' @param filter .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
@@ -219,14 +228,16 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 timeAnalysis <- function(
     data,
     duration,
-    Judge) {
+    Judge,
+    filter) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('timeAnalysis requires jmvcore to be installed (restart may be required)')
 
     options <- timeAnalysisOptions$new(
         duration = duration,
-        Judge = Judge)
+        Judge = Judge,
+        filter = filter)
 
     results <- timeAnalysisResults$new(
         options = options)

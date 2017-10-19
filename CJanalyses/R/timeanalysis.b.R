@@ -13,18 +13,51 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           if( is.null( self$options$duration ) )
             return( NULL )
           
-          durationFull <- self$data[[self$options$duration]]
+          duration <- self$options$duration
+          judge <- self$options$Judge
           
-          duration <- na.omit( durationFull )
-           
+          durationFull <- self$data[[ duration ]]
+          
+          if( !is.null( judge ) )
+          {
+            Data <- self$data[ c( duration, judge ) ]
+            
+            Data <- na.omit( Data )
+            
+            if( self$options$filter )
+            {
+              Data <- Data[ Data[ , duration ] <= self$options$filter, ]
+              
+              self$results$judge$setTitle( paste0( "Filtered on '<=",
+                                                   self$options$filter, "'" ) )
+            }
+            
+            duration <- Data[ , duration ]
+            
+            judge <- Data[ , judge ]
+            
+          } else
+          {
+            duration <- na.omit( durationFull )
+            
+            if( self$options$filter )
+            {
+              duration <- duration[ duration <= self$options$filter ]
+              
+              self$results$judge$setTitle( paste0( "Filtered on '<=",
+                                                   self$options$filter, "'" ) )
+            }
+          }
+          
           missLength <- length( durationFull ) - length( duration )
           
           tableGroup <- self$results$judge$table
           plotGroup <- self$results$judge$plot
+           
           
           resultGen <- summary( duration )
           resultGen <- c( resultGen, sd = sd( duration ) )
-          #### why is miss NaN
+          
           tableGroup$general$addRow( rowKey = 1,
                                      values = list(
                                        N = length( duration ),
@@ -40,8 +73,6 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
           if( !is.null( self$options$Judge ) )
           {
-            judge <- self$data[[self$options$Judge]]
-            
             tableGroup$split$setVisible( TRUE )
             plotGroup$split$setVisible( TRUE )
             

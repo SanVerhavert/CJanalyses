@@ -22,3 +22,10 @@ children:
             name: Judge
             maxItemCount: 1
             isTarget: true
+  - type: LayoutBox
+    margin: large
+    children:
+      - type: TextBox
+        name: filter
+        format: number
+        inputPattern: '[0-9]+'

@@ -7,7 +7,7 @@ items:
     - name: debugText
       title: Debug
       type:  Preformatted
-      visible: FALSE
+      visible: TRUE
       
     - name: judge
       title: ""

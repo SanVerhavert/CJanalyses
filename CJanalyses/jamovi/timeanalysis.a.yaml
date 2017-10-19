@@ -17,3 +17,8 @@ options:
     - name: Judge
       title: Judge
       type: Variable
+      
+    - name: filter
+      title: Filter
+      type: Number
+      min: 0
