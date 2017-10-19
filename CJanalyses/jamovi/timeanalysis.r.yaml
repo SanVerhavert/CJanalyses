@@ -9,97 +9,93 @@ items:
       type:  Preformatted
       visible: TRUE
       
-    - name: judge
-      title: ""
+    - name: table
+      title: Summary
       type: Group
+      
+      clearWith:
+        - duration
+      
       items:
-        - name: table
-          title: Summary
-          type: Group
+        - name: general
+          title: Overall
+          type: Table
+            
+          columns:
+            - name: N
+              title: N
+              type: integer
+              
+            - name: miss
+              title: Missing
+              type: integer
+              
+            - name: mean
+              title: Mean
+              type: number
+            
+            - name: sd
+              title: sd
+              type: number
+              
+            - name: min
+              title: Min
+              type: integer
+              
+            - name: max
+              title: Max
+              type: integer
+        
+        - name: judge
+          title: Per judge
+          type: Table
+          visible: FALSE
           
           clearWith:
-            - duration
+            - Judge
           
-          items:
-            - name: general
-              title: Overall
-              type: Table
-                
-              columns:
-                - name: N
-                  title: N
-                  type: integer
-                  
-                - name: miss
-                  title: Missing
-                  type: integer
-                  
-                - name: mean
-                  title: Mean
-                  type: number
-                
-                - name: sd
-                  title: sd
-                  type: number
-                  
-                - name: min
-                  title: Min
-                  type: integer
-                  
-                - name: max
-                  title: Max
-                  type: integer
+          columns:
+            - name: judge
+              title: Judge
+              type: text
             
-            - name: split
-              title: Per judge
-              type: Table
-              visible: FALSE
+            - name: N
+              title: N
+              type: integer
               
-              clearWith:
-                - Judge
+            - name: miss
+              title: Missing
+              type: integer
               
-              columns:
-                - name: judge
-                  title: Judge
-                  type: text
-                
-                - name: N
-                  title: N
-                  type: integer
-                  
-                - name: miss
-                  title: Missing
-                  type: integer
-                  
-                - name: mean
-                  title: Mean
-                  type: number
-                
-                - name: sd
-                  title: sd
-                  type: number
-                  
-                - name: min
-                  title: Min
-                  type: integer
-                  
-                - name: max
-                  title: Max
-                  type: integer
+            - name: mean
+              title: Mean
+              type: number
+            
+            - name: sd
+              title: sd
+              type: number
+            
+            - name: min
+              title: Min
+              type: integer
               
-        - name: plot
-          title: Plot
-          type: Group
-          items:
-            - name: general
-              title: Overall
-              type: Image
-              renderFun: .generalPlot
-              
-            - name: split
-              title: Per judge
-              type: Image
-              width: 1000
-              height: 1000
-              visible: false
-              renderFun: .splitPlot
+            - name: max
+              title: Max
+              type: integer
+          
+    - name: plot
+      title: Plot
+      type: Group
+      items:
+        - name: general
+          title: Overall
+          type: Image
+          renderFun: .generalPlot
+          
+        - name: judge
+          title: Per judge
+          type: Image
+          width: 1000
+          height: 1000
+          visible: false
+          renderFun: .splitPlot

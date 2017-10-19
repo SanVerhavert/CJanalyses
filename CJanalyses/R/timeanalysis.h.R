@@ -47,10 +47,12 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         debugText = function() private$..debugText,
-        judge = function() private$..judge),
+        table = function() private$..table,
+        plot = function() private$..plot),
     private = list(
         ..debugText = NA,
-        ..judge = NA),
+        ..table = NA,
+        ..plot = NA),
     public=list(
         initialize=function(options) {
             super$initialize(
@@ -62,134 +64,119 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 name="debugText",
                 title="Debug",
                 visible=TRUE)
-            private$..judge <- R6::R6Class(
+            private$..table <- R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    table = function() private$..table,
-                    plot = function() private$..plot),
+                    general = function() private$..general,
+                    judge = function() private$..judge),
                 private = list(
-                    ..table = NA,
-                    ..plot = NA),
+                    ..general = NA,
+                    ..judge = NA),
                 public=list(
                     initialize=function(options) {
                         super$initialize(
                             options=options,
+                            name="table",
+                            title="Summary")
+                        private$..general <- jmvcore::Table$new(
+                            options=options,
+                            name="general",
+                            title="Overall",
+                            columns=list(
+                                list(
+                                    `name`="N", 
+                                    `title`="N", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="miss", 
+                                    `title`="Missing", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="mean", 
+                                    `title`="Mean", 
+                                    `type`="number"),
+                                list(
+                                    `name`="sd", 
+                                    `title`="sd", 
+                                    `type`="number"),
+                                list(
+                                    `name`="min", 
+                                    `title`="Min", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="max", 
+                                    `title`="Max", 
+                                    `type`="integer")))
+                        private$..judge <- jmvcore::Table$new(
+                            options=options,
                             name="judge",
-                            title="")
-                        private$..table <- R6::R6Class(
-                            inherit = jmvcore::Group,
-                            active = list(
-                                general = function() private$..general,
-                                split = function() private$..split),
-                            private = list(
-                                ..general = NA,
-                                ..split = NA),
-                            public=list(
-                                initialize=function(options) {
-                                    super$initialize(
-                                        options=options,
-                                        name="table",
-                                        title="Summary")
-                                    private$..general <- jmvcore::Table$new(
-                                        options=options,
-                                        name="general",
-                                        title="Overall",
-                                        columns=list(
-                                            list(
-                                                `name`="N", 
-                                                `title`="N", 
-                                                `type`="integer"),
-                                            list(
-                                                `name`="miss", 
-                                                `title`="Missing", 
-                                                `type`="integer"),
-                                            list(
-                                                `name`="mean", 
-                                                `title`="Mean", 
-                                                `type`="number"),
-                                            list(
-                                                `name`="sd", 
-                                                `title`="sd", 
-                                                `type`="number"),
-                                            list(
-                                                `name`="min", 
-                                                `title`="Min", 
-                                                `type`="integer"),
-                                            list(
-                                                `name`="max", 
-                                                `title`="Max", 
-                                                `type`="integer")))
-                                    private$..split <- jmvcore::Table$new(
-                                        options=options,
-                                        name="split",
-                                        title="Per judge",
-                                        visible=FALSE,
-                                        clearWith=list(
-                                            "Judge"),
-                                        columns=list(
-                                            list(
-                                                `name`="judge", 
-                                                `title`="Judge", 
-                                                `type`="text"),
-                                            list(
-                                                `name`="N", 
-                                                `title`="N", 
-                                                `type`="integer"),
-                                            list(
-                                                `name`="miss", 
-                                                `title`="Missing", 
-                                                `type`="integer"),
-                                            list(
-                                                `name`="mean", 
-                                                `title`="Mean", 
-                                                `type`="number"),
-                                            list(
-                                                `name`="sd", 
-                                                `title`="sd", 
-                                                `type`="number"),
-                                            list(
-                                                `name`="min", 
-                                                `title`="Min", 
-                                                `type`="integer"),
-                                            list(
-                                                `name`="max", 
-                                                `title`="Max", 
-                                                `type`="integer")))
-                                    self$add(private$..general)
-                                    self$add(private$..split)}))$new(options=options)
-                        private$..plot <- R6::R6Class(
-                            inherit = jmvcore::Group,
-                            active = list(
-                                general = function() private$..general,
-                                split = function() private$..split),
-                            private = list(
-                                ..general = NA,
-                                ..split = NA),
-                            public=list(
-                                initialize=function(options) {
-                                    super$initialize(
-                                        options=options,
-                                        name="plot",
-                                        title="Plot")
-                                    private$..general <- jmvcore::Image$new(
-                                        options=options,
-                                        name="general",
-                                        title="Overall",
-                                        renderFun=".generalPlot")
-                                    private$..split <- jmvcore::Image$new(
-                                        options=options,
-                                        name="split",
-                                        title="Per judge",
-                                        width=1000,
-                                        height=1000,
-                                        visible=FALSE,
-                                        renderFun=".splitPlot")
-                                    self$add(private$..general)
-                                    self$add(private$..split)}))$new(options=options)
-                        self$add(private$..table)
-                        self$add(private$..plot)}))$new(options=options)
+                            title="Per judge",
+                            visible=FALSE,
+                            clearWith=list(
+                                "Judge"),
+                            columns=list(
+                                list(
+                                    `name`="judge", 
+                                    `title`="Judge", 
+                                    `type`="text"),
+                                list(
+                                    `name`="N", 
+                                    `title`="N", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="miss", 
+                                    `title`="Missing", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="mean", 
+                                    `title`="Mean", 
+                                    `type`="number"),
+                                list(
+                                    `name`="sd", 
+                                    `title`="sd", 
+                                    `type`="number"),
+                                list(
+                                    `name`="min", 
+                                    `title`="Min", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="max", 
+                                    `title`="Max", 
+                                    `type`="integer")))
+                        self$add(private$..general)
+                        self$add(private$..judge)}))$new(options=options)
+            private$..plot <- R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    general = function() private$..general,
+                    judge = function() private$..judge),
+                private = list(
+                    ..general = NA,
+                    ..judge = NA),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="plot",
+                            title="Plot")
+                        private$..general <- jmvcore::Image$new(
+                            options=options,
+                            name="general",
+                            title="Overall",
+                            renderFun=".generalPlot")
+                        private$..judge <- jmvcore::Image$new(
+                            options=options,
+                            name="judge",
+                            title="Per judge",
+                            width=1000,
+                            height=1000,
+                            visible=FALSE,
+                            renderFun=".splitPlot")
+                        self$add(private$..general)
+                        self$add(private$..judge)}))$new(options=options)
             self$add(private$..debugText)
-            self$add(private$..judge)}))
+            self$add(private$..table)
+            self$add(private$..plot)}))
 
 timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "timeAnalysisBase",
@@ -220,8 +207,10 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
-#'   \code{results$judge$table} \tab \tab \tab \tab \tab a group \cr
-#'   \code{results$judge$plot} \tab \tab \tab \tab \tab a group \cr
+#'   \code{results$table$general} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$table$judge} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$plot$general} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot$judge} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' @export

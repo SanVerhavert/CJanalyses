@@ -28,7 +28,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             {
               Data <- Data[ Data[ , duration ] <= self$options$filter, ]
               
-              self$results$judge$setTitle( paste0( "Filtered on '<=",
+              self$results$table$setTitle( paste0( "Summary: Filtered on '<=",
                                                    self$options$filter, "'" ) )
             }
             
@@ -44,15 +44,15 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             {
               duration <- duration[ duration <= self$options$filter ]
               
-              self$results$judge$setTitle( paste0( "Filtered on '<=",
+              self$results$table$setTitle( paste0( "Summary: Filtered on '<=",
                                                    self$options$filter, "'" ) )
             }
           }
           
           missLength <- length( durationFull ) - length( duration )
           
-          tableGroup <- self$results$judge$table
-          plotGroup <- self$results$judge$plot
+          tableGroup <- self$results$table
+          plotGroup <- self$results$plot
            
           
           resultGen <- summary( duration )
@@ -73,10 +73,10 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
           if( !is.null( self$options$Judge ) )
           {
-            tableGroup$split$setVisible( TRUE )
-            plotGroup$split$setVisible( TRUE )
+            tableGroup$judge$setVisible( TRUE )
+            plotGroup$judge$setVisible( TRUE )
             
-            plotGroup$split$setState( by( data = duration, INDICES = judge,
+            plotGroup$judge$setState( by( data = duration, INDICES = judge,
                                           FUN = na.omit ) )
             
             resultsSplit <- by( data = duration, INDICES = judge,
@@ -91,7 +91,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             
             for( i in 1:length( resultsSplit ) )
             {
-              tableGroup$split$addRow( rowKey = i,
+              tableGroup$judge$addRow( rowKey = i,
                                        values = list(
                                          judge = names( resultsSplit )[i],
                                          N = resultsSplit[[i]][ "N" ],
@@ -104,17 +104,17 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             }
             rm(i)
             
-            tableGroup$split$setState( resultsSplit )
+            tableGroup$judge$setState( resultsSplit )
             
-          } else tableGroup$split$setVisible( FALSE )
+          } else tableGroup$judge$setVisible( FALSE )
           
         },
         .generalPlot = function( ... ) {
-          if( is.null( self$results$judge$table$general$state ) )
+          if( is.null( self$results$table$general$state ) )
             return( NULL )
           
-          resultGen <- self$results$judge$table$general$state
-          duration <- self$results$judge$plot$general$state
+          resultGen <- self$results$table$general$state
+          duration <- self$results$plot$general$state
           
           layoutMat <- matrix( data = c( 1, 2 ), nrow = 1, ncol = 2 )
           layout( mat = layoutMat, widths = c( 2, 1 ) )
@@ -126,10 +126,10 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           
           TRUE
         },
-        .splitPlot = function( ... ) {
-          resultGen <- self$results$judge$table$general$state
-          resultSplit <- self$results$judge$table$split$state
-          duration <- self$results$judge$plot$split$state
+        .judgePlot = function( ... ) {
+          resultGen <- self$results$table$general$state
+          resultSplit <- self$results$table$judge$state
+          duration <- self$results$plot$judge$state
           
           plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
           plotCol <- plotCol( length( duration ) )
