@@ -53,13 +53,15 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 options=options,
                 name="debugText",
                 title="Debug",
-                visible=FALSE)
+                visible=TRUE)
             private$..judge <- R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    table = function() private$..table),
+                    table = function() private$..table,
+                    plot = function() private$..plot),
                 private = list(
-                    ..table = NA),
+                    ..table = NA,
+                    ..plot = NA),
                 public=list(
                     initialize=function(options) {
                         super$initialize(
@@ -79,11 +81,20 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     super$initialize(
                                         options=options,
                                         name="table",
-                                        title="")
+                                        title="Summary")
                                     private$..general <- jmvcore::Table$new(
                                         options=options,
                                         name="general",
+                                        title="",
                                         columns=list(
+                                            list(
+                                                `name`="N", 
+                                                `title`="N", 
+                                                `type`="integer"),
+                                            list(
+                                                `name`="miss", 
+                                                `title`="Missing", 
+                                                `type`="integer"),
                                             list(
                                                 `name`="mean", 
                                                 `title`="Mean", 
@@ -103,6 +114,7 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     private$..split <- jmvcore::Table$new(
                                         options=options,
                                         name="split",
+                                        title="",
                                         visible=FALSE,
                                         clearWith=list(
                                             "Judge"),
@@ -111,6 +123,14 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                                 `name`="judge", 
                                                 `title`="Judge", 
                                                 `type`="text"),
+                                            list(
+                                                `name`="N", 
+                                                `title`="N", 
+                                                `type`="integer"),
+                                            list(
+                                                `name`="miss", 
+                                                `title`="Missing", 
+                                                `type`="integer"),
                                             list(
                                                 `name`="mean", 
                                                 `title`="Mean", 
@@ -129,7 +149,37 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                                 `type`="integer")))
                                     self$add(private$..general)
                                     self$add(private$..split)}))$new(options=options)
-                        self$add(private$..table)}))$new(options=options)
+                        private$..plot <- R6::R6Class(
+                            inherit = jmvcore::Group,
+                            active = list(
+                                general = function() private$..general,
+                                split = function() private$..split),
+                            private = list(
+                                ..general = NA,
+                                ..split = NA),
+                            public=list(
+                                initialize=function(options) {
+                                    super$initialize(
+                                        options=options,
+                                        name="plot",
+                                        title="Plot")
+                                    private$..general <- jmvcore::Image$new(
+                                        options=options,
+                                        name="general",
+                                        title="",
+                                        renderFun=".generalPlot")
+                                    private$..split <- jmvcore::Image$new(
+                                        options=options,
+                                        name="split",
+                                        title="",
+                                        width=1000,
+                                        height=1000,
+                                        visible=FALSE,
+                                        renderFun=".splitPlot")
+                                    self$add(private$..general)
+                                    self$add(private$..split)}))$new(options=options)
+                        self$add(private$..table)
+                        self$add(private$..plot)}))$new(options=options)
             self$add(private$..debugText)
             self$add(private$..judge)}))
 
@@ -162,6 +212,7 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$judge$table} \tab \tab \tab \tab \tab a group \cr
+#'   \code{results$judge$plot} \tab \tab \tab \tab \tab a group \cr
 #' }
 #'
 #' @export

@@ -230,7 +230,7 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                             name="scalePlot",
                             title="Estimates plot",
                             width=800,
-                            height=500,
+                            height=800,
                             visible=FALSE,
                             renderFun=".scalePlot")
                         private$..misfitTable <- R6::R6Class(

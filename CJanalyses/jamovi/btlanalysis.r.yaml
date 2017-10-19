@@ -66,7 +66,7 @@ items:
         title: Estimates plot
         type: Image
         width: 800
-        height: 500
+        height: 800
         visible: false
         renderFun: .scalePlot
       

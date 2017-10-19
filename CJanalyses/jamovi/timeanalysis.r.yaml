@@ -26,6 +26,14 @@ items:
               type: Table
                 
               columns:
+                - name: N
+                  title: N
+                  type: integer
+                  
+                - name: miss
+                  title: Missing
+                  type: integer
+                  
                 - name: mean
                   title: Mean
                   type: number
@@ -43,6 +51,7 @@ items:
                   type: integer
             
             - name: split
+              title: ""
               type: Table
               visible: FALSE
               
@@ -54,6 +63,14 @@ items:
                   title: Judge
                   type: text
                 
+                - name: N
+                  title: N
+                  type: integer
+                  
+                - name: miss
+                  title: Missing
+                  type: integer
+                  
                 - name: mean
                   title: Mean
                   type: number
@@ -70,4 +87,19 @@ items:
                   title: Max
                   type: integer
               
-          
+        - name: plot
+          title: Plot
+          type: Group
+          items:
+            - name: general
+              title: ""
+              type: Image
+              renderFun: .generalPlot
+              
+            - name: split
+              title: ""
+              type: Image
+              width: 1000
+              height: 1000
+              visible: false
+              renderFun: .splitPlot
