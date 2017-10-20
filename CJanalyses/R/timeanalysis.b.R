@@ -77,7 +77,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           if( !is.null( Repr1 ) & !is.null( Repr2 ) )
           {
             tableGroup$repr$setVisible( TRUE )
-            # plotGroup$repr$setVisible( TRUE )
+            plotGroup$repr$setVisible( TRUE )
             
             DataRepr1 <- data.frame( Duration = Data[ , Duration ],
                                      Repr = Data[ , Repr1 ])
@@ -210,9 +210,9 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             }
             rm(i)
             
-            # plotGroup$repr$setState( by( data = DataLong$Duration,
-            #                               INDICES = DataLong$Repr,
-            #                               FUN = na.omit ) )
+            plotGroup$repr$setState( by( data = DataLong$Duration,
+                                          INDICES = DataLong$Repr,
+                                          FUN = na.omit ) )
             
             tableGroup$repr$setState( reprSplit )
             
@@ -280,6 +280,53 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                  outer = T, cex.main = 2 )
 
           TRUE
-        }
-        )
+        },
+        .reprPlot = function( ... ) {
+          resultGen <- self$results$table$general$state
+          resultSplit <- self$results$table$repr$state
+          duration <- self$results$plot$repr$state
+          
+          plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
+          plotCol <- plotCol( length( duration ) )
+          
+          matDat <- 1:length( resultSplit )
+          
+          if( ( length( resultSplit ) %% 3 ) > 0 )
+          {
+            matDat <- c( matDat, rep( 0, times = 3 - length( resultSplit ) %% 3 ) )
+          }
+          
+          layoutMat <- matrix( data = matDat, ncol = 3, byrow = T )
+          
+          layoutMat <- cbind( layoutMat, rep( length( resultSplit ) + 1,
+                                              times = nrow( layoutMat ) )
+          )
+          
+          par( oma = c( 0, 0, 2, 0 ) )
+          
+          layout( mat = layoutMat, widths = c( rep( 2, times = ncol( layoutMat - 1 ) ),
+                                               1 ) )
+          
+          for( i in 1:length( duration ) )
+          {
+            histObj <- hist( x = duration[[i]], main = names( duration )[i],
+                             xlab = "Durations", ylab = "Freq",
+                             col = plotCol[i] )
+            abline( v = resultGen[ "Mean" ], col = "#c24446", lty = 2 )
+            abline( v = resultSplit[[i]][ "Mean" ], col = "#a0c178", lty = 2 )
+            text( x = max( histObj$mids ), y = max( histObj$counts ),
+                  labels = paste0( "Total duration: ", resultSplit[[i]][ "total" ] ),
+                  xpd = T )
+          }
+          rm(i)
+          
+          plot.new()
+          legend( "topleft", legend = c( "General mean", "Group mean" ),
+                  col = c( "#c24446", "#a0c178" ), lty = 2 )
+          
+          title( main = "Histogram of judgement duration", sub = "Per Judge",
+                 outer = T, cex.main = 2 )
+          
+          TRUE
+        } )
 )

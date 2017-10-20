@@ -214,10 +214,12 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
                     general = function() private$..general,
-                    judge = function() private$..judge),
+                    judge = function() private$..judge,
+                    repr = function() private$..repr),
                 private = list(
                     ..general = NA,
-                    ..judge = NA),
+                    ..judge = NA,
+                    ..repr = NA),
                 public=list(
                     initialize=function(options) {
                         super$initialize(
@@ -237,8 +239,17 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                             height=1000,
                             visible=FALSE,
                             renderFun=".judgePlot")
+                        private$..repr <- jmvcore::Image$new(
+                            options=options,
+                            name="repr",
+                            title="Per representation",
+                            width=1000,
+                            height=1000,
+                            visible=FALSE,
+                            renderFun=".reprPlot")
                         self$add(private$..general)
-                        self$add(private$..judge)}))$new(options=options)
+                        self$add(private$..judge)
+                        self$add(private$..repr)}))$new(options=options)
             self$add(private$..debugText)
             self$add(private$..talk)
             self$add(private$..table)
@@ -281,6 +292,7 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #'   \code{results$table$repr} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot$general} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot$judge} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$plot$repr} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' @export

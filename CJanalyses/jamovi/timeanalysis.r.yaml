@@ -146,3 +146,11 @@ items:
           height: 1000
           visible: false
           renderFun: .judgePlot
+        
+        - name: repr
+          title: Per representation
+          type: Image
+          width: 1000
+          height: 1000
+          visible: false
+          renderFun: .reprPlot
