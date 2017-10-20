@@ -18,7 +18,7 @@ calcScore <- function( Data ){
   }
   rm( i )
   
-  output <- data.frame( Data[ , 1:3 ], Score )
+  output <- data.frame( Data[ , ], Score )
   
   return( output )
 }

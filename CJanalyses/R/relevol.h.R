@@ -6,10 +6,11 @@ relEvolOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
-            dep = NULL,
-            group = NULL,
-            alt = "notequal",
-            varEq = TRUE, ...) {
+            Judge = NULL,
+            Repr1 = NULL,
+            Repr2 = NULL,
+            Selected = NULL,
+            OrderOn = NULL, ...) {
 
             super$initialize(
                 package='CJanalyses',
@@ -17,59 +18,88 @@ relEvolOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 requiresData=TRUE,
                 ...)
         
-            private$..dep <- jmvcore::OptionVariable$new(
-                "dep",
-                dep)
-            private$..group <- jmvcore::OptionVariable$new(
-                "group",
-                group)
-            private$..alt <- jmvcore::OptionList$new(
-                "alt",
-                alt,
-                options=list(
-                    "notequal",
-                    "onegreater",
-                    "twogreater"),
-                default="notequal")
-            private$..varEq <- jmvcore::OptionBool$new(
-                "varEq",
-                varEq,
-                default=TRUE)
+            private$..Judge <- jmvcore::OptionVariable$new(
+                "Judge",
+                Judge)
+            private$..Repr1 <- jmvcore::OptionVariable$new(
+                "Repr1",
+                Repr1)
+            private$..Repr2 <- jmvcore::OptionVariable$new(
+                "Repr2",
+                Repr2)
+            private$..Selected <- jmvcore::OptionVariable$new(
+                "Selected",
+                Selected)
+            private$..OrderOn <- jmvcore::OptionVariable$new(
+                "OrderOn",
+                OrderOn)
         
-            self$.addOption(private$..dep)
-            self$.addOption(private$..group)
-            self$.addOption(private$..alt)
-            self$.addOption(private$..varEq)
+            self$.addOption(private$..Judge)
+            self$.addOption(private$..Repr1)
+            self$.addOption(private$..Repr2)
+            self$.addOption(private$..Selected)
+            self$.addOption(private$..OrderOn)
         }),
     active = list(
-        dep = function() private$..dep$value,
-        group = function() private$..group$value,
-        alt = function() private$..alt$value,
-        varEq = function() private$..varEq$value),
+        Judge = function() private$..Judge$value,
+        Repr1 = function() private$..Repr1$value,
+        Repr2 = function() private$..Repr2$value,
+        Selected = function() private$..Selected$value,
+        OrderOn = function() private$..OrderOn$value),
     private = list(
-        ..dep = NA,
-        ..group = NA,
-        ..alt = NA,
-        ..varEq = NA)
+        ..Judge = NA,
+        ..Repr1 = NA,
+        ..Repr2 = NA,
+        ..Selected = NA,
+        ..OrderOn = NA)
 )
 
 relEvolResults <- if (requireNamespace('jmvcore')) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
-        text = function() private$..text),
+        debugText = function() private$..debugText,
+        Warning = function() private$..Warning,
+        table = function() private$..table),
     private = list(
-        ..text = NA),
+        ..debugText = NA,
+        ..Warning = NA,
+        ..table = NA),
     public=list(
         initialize=function(options) {
             super$initialize(
                 options=options,
                 name="",
-                title="relEvol")
-            private$..text <- jmvcore::Preformatted$new(
+                title="Reliability evolution")
+            private$..debugText <- jmvcore::Preformatted$new(
                 options=options,
-                name="text",
-                title="relEvol")
-            self$add(private$..text)}))
+                name="debugText",
+                title="Debug",
+                visible=TRUE)
+            private$..Warning <- jmvcore::Preformatted$new(
+                options=options,
+                name="Warning",
+                title="",
+                visible=FALSE)
+            private$..table <- jmvcore::Table$new(
+                options=options,
+                name="table",
+                title="Reliability Evolution",
+                columns=list(
+                    list(
+                        `name`="RoundNo", 
+                        `title`="Round numner", 
+                        `type`="integer"),
+                    list(
+                        `name`="Rel", 
+                        `title`="Reliability", 
+                        `type`="number"),
+                    list(
+                        `name`="Returns", 
+                        `title`="Returns", 
+                        `type`="number")))
+            self$add(private$..debugText)
+            self$add(private$..Warning)
+            self$add(private$..table)}))
 
 relEvolBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "relEvolBase",
@@ -90,35 +120,46 @@ relEvolBase <- if (requireNamespace('jmvcore')) R6::R6Class(
                 completeWhenFilled = FALSE)
         }))
 
-#' relEvol
+#' Reliability Evolution
 #'
 #' 
 #' @param data .
-#' @param dep .
-#' @param group .
-#' @param alt .
-#' @param varEq .
+#' @param Judge .
+#' @param Repr1 .
+#' @param Repr2 .
+#' @param Selected .
+#' @param OrderOn .
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$text} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$Warning} \tab \tab \tab \tab \tab a preformatted \cr
+#'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #' }
+#'
+#' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
+#'
+#' \code{results$table$asDF}
+#'
+#' \code{as.data.frame(results$table)}
 #'
 #' @export
 relEvol <- function(
     data,
-    dep,
-    group,
-    alt = "notequal",
-    varEq = TRUE) {
+    Judge,
+    Repr1,
+    Repr2,
+    Selected,
+    OrderOn) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('relEvol requires jmvcore to be installed (restart may be required)')
 
     options <- relEvolOptions$new(
-        dep = dep,
-        group = group,
-        alt = alt,
-        varEq = varEq)
+        Judge = Judge,
+        Repr1 = Repr1,
+        Repr2 = Repr2,
+        Selected = Selected,
+        OrderOn = OrderOn)
 
     results <- relEvolResults$new(
         options = options)

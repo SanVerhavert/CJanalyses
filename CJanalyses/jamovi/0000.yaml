@@ -30,10 +30,10 @@ analyses:
     ns: CJanalyses
     menuGroup: CJanalyses
     menuTitle: Time Analysis
-  - title: relEvol
+  - title: Reliability Evolution
     name: relEvol
     ns: CJanalyses
     menuGroup: CJanalyses
-    menuTitle: relEvol
+    menuTitle: Reliability Evolution
 
 ...
