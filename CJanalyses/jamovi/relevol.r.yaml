@@ -1,0 +1,11 @@
+---
+name:  relEvol
+title: Reliability evolution
+jrs:   '1.1'
+
+items:
+    - name:  text
+      title: relEvol
+      type:  Preformatted
+
+...

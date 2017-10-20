@@ -30,5 +30,10 @@ analyses:
     ns: CJanalyses
     menuGroup: CJanalyses
     menuTitle: Time Analysis
+  - title: relEvol
+    name: relEvol
+    ns: CJanalyses
+    menuGroup: CJanalyses
+    menuTitle: relEvol
 
 ...
