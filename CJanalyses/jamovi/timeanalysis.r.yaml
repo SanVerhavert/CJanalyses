@@ -10,8 +10,9 @@ items:
       visible: TRUE
       
     - name: talk
-      title: "TALK"
+      title: ""
       type:  Preformatted
+      visible: FALSE
       
     - name: table
       title: Summary
@@ -107,6 +108,10 @@ items:
               
             - name: miss
               title: Missing
+              type: integer
+              
+            - name: total
+              title: Total viewing time
               type: integer
               
             - name: mean

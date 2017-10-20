@@ -189,7 +189,8 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                                   res <- summary(x)
                                   res <- c( res, sd = sd(x) )
                                   res <- c( res, N = length(x) )
-                                  c( res, miss = totLength - res[ "N" ] )
+                                  res <- c( res, miss = totLength - res[ "N" ] )
+                                  c( res, total = sum( x ) )
                                 } )
             
             # output ----
@@ -200,6 +201,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                                          repr = names( reprSplit )[i],
                                          N = reprSplit[[i]][ "N" ],
                                          miss = reprSplit[[i]][ "miss.N" ],
+                                         total = reprSplit[[i]][ "total" ],
                                          mean = reprSplit[[i]][ "Mean" ],
                                          sd = reprSplit[[i]]["sd" ],
                                          min = reprSplit[[i]][ "Min." ],

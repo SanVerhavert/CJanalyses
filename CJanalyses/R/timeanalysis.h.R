@@ -83,7 +83,8 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..talk <- jmvcore::Preformatted$new(
                 options=options,
                 name="talk",
-                title="TALK")
+                title="",
+                visible=FALSE)
             private$..table <- R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -185,6 +186,10 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                 list(
                                     `name`="miss", 
                                     `title`="Missing", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="total", 
+                                    `title`="Total viewing time", 
                                     `type`="integer"),
                                 list(
                                     `name`="mean", 
