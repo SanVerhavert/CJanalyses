@@ -19,7 +19,7 @@ children:
         label: Judge
         children:
           - type: VariablesListBox
-            name: Judge
+            name: judge
             maxItemCount: 1
             isTarget: true
   - type: LayoutBox

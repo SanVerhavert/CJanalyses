@@ -7,7 +7,7 @@ timeAnalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
     public = list(
         initialize = function(
             duration = NULL,
-            Judge = NULL,
+            judge = NULL,
             filter = NULL, ...) {
 
             super$initialize(
@@ -21,25 +21,25 @@ timeAnalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 duration,
                 permitted=list(
                     "continuous"))
-            private$..Judge <- jmvcore::OptionVariable$new(
-                "Judge",
-                Judge)
+            private$..judge <- jmvcore::OptionVariable$new(
+                "judge",
+                judge)
             private$..filter <- jmvcore::OptionNumber$new(
                 "filter",
                 filter,
                 min=0)
         
             self$.addOption(private$..duration)
-            self$.addOption(private$..Judge)
+            self$.addOption(private$..judge)
             self$.addOption(private$..filter)
         }),
     active = list(
         duration = function() private$..duration$value,
-        Judge = function() private$..Judge$value,
+        judge = function() private$..judge$value,
         filter = function() private$..filter$value),
     private = list(
         ..duration = NA,
-        ..Judge = NA,
+        ..judge = NA,
         ..filter = NA)
 )
 
@@ -209,7 +209,7 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' 
 #' @param data .
 #' @param duration .
-#' @param Judge .
+#' @param judge .
 #' @param filter .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -225,7 +225,7 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 timeAnalysis <- function(
     data,
     duration,
-    Judge,
+    judge,
     filter) {
 
     if ( ! requireNamespace('jmvcore'))
@@ -233,7 +233,7 @@ timeAnalysis <- function(
 
     options <- timeAnalysisOptions$new(
         duration = duration,
-        Judge = Judge,
+        judge = judge,
         filter = filter)
 
     results <- timeAnalysisResults$new(

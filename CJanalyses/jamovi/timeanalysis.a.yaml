@@ -14,7 +14,7 @@ options:
       type: Variable
       permitted: [ continuous ]
     
-    - name: Judge
+    - name: judge
       title: Judge
       type: Variable
       
