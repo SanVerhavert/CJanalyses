@@ -13,61 +13,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           if( is.null( self$options$duration ) )
             return( NULL )
           
-          duration <- self$options$duration
-          judge <- self$options$Judge
-          filter <- self$options$filter
           
-          if( is.null( judge ) )
-          { # if no judge and no repr
-            durationFull <- self$data[[ duration ]]
-            
-            if( filter )
-            { # if filter
-              lengthAll <- length( durationFull )
-              durationFull <- durationFull[ durationFull <= self$options$filter ]
-              
-              outText <- paste0( "Filtered on '<=", self$options$filter, "'!\n",
-                                 "Removed ", lengthAll - length( durationFull ),
-                                 " entrie(s)." )
-              
-              self$results$talk$setContent( outText )
-            } else #turn of filter text
-              self$results$talk$setContent( "" )
-            
-            duration <- na.omit( durationFull )
-          } else #END if no judge no repr
-          { # else juge or repr
-            if( !is.null( judge ) )
-            { # if judge
-              Data <- self$data[ c( duration, judge ) ]
-              
-              if( filter )
-              { #if filter
-                judgeFiltd <- Data[ Data[ , duration ] >= self$options$filter,
-                                    judge ]
-                
-                Data <- Data[ Data[ , duration ] <= self$options$filter, ]
-                
-                outText <- paste0( "Filtered on '<=", self$options$filter, "'!\n",
-                                   "Removed ", length( judgeFiltd ),
-                                   " entrie(s) for Judge(s) ",
-                                   paste( unique( judgeFiltd ), sep = ", " ), "." )
-                
-                self$results$talk$setContent( outText )
-              } else # turn off filter text
-                self$results$talk$setContent( "" )
-              
-              durationFull <- Data[ , duration ]
-              
-              Data <- na.omit( Data )
-              
-              duration <- Data[ , duration ]
-              
-              judge <- Data[ , judge ]
-            } # END if judge
-          } # END else judge or repr
-          
-          missLength <- length( durationFull ) - length( duration )
           
           tableGroup <- self$results$table
           plotGroup <- self$results$plot
