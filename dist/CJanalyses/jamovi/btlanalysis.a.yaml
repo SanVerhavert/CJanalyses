@@ -1,0 +1,73 @@
+---
+name:  BTLanalysis
+title: Bradley-Terry-Luce model and statistics
+menuGroup: CJanalyses
+version: '1.0.0'
+jas: '1.1'
+
+options:
+    - name: data
+      type: Data
+
+    - name: Repr1
+      title: Representation 1
+      type: Variable
+      permitted: [nominal, nominaltext]
+    
+    - name: Repr2
+      title: Representation 2
+      type: Variable
+      permitted: [nominal, nominaltext]
+      
+    - name: Selected
+      title: Selected
+      type: Variable
+      permitted: [nominal, nominaltext]
+      
+    - name: Judge
+      title: Judge
+      type: Variable
+      permitted: [nominal, nominaltext]
+      
+    - name: estIters
+      title: number of estimation iterations
+      type: Integer
+      min: 0
+      default: 4
+      
+    - name: epsCor
+      title: Epsylon Correction Factor
+      type: Number
+      min: 0.0
+      default: 0.003
+      
+    - name: rel
+      title: Reliability
+      type: Bool
+      default: false
+    
+    - name: plotGraph
+      title: Plot Network Graph of comparisons
+      type: Bool
+      default: false
+      
+    - name: plotScale
+      title: Plot Estimates
+      type: Bool
+      default: false
+      
+    - name: misfit
+      title: Misfit
+      options: [ none, Infit, Lz ]
+      type: List
+      
+    - name: flagBound
+      title: Misfit Cutoff
+      type: Integer
+      min: 0
+      default: 2
+      
+    - name: misfitPlot
+      title: Misfit plot
+      type: Bool
+      default: false

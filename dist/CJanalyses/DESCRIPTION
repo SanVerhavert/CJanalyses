@@ -1,0 +1,12 @@
+Package: CJanalyses
+Type: Package
+Title: It does some CJ related alanyses
+Version: 0.0.1
+Author: San Verhavert
+Maintainer: San Verhavert <san.verhavert@uantwerpen.be>
+Description: Just try it out...
+License: GPL(>= 3)
+Encoding: UTF-8
+LazyData: true
+Imports: jmvcore (>= 0.5.5), R6, igraph (<= 1.1.2)
+Depends: plyr (<= 1.8.4)

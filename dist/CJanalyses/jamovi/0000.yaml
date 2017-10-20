@@ -1,0 +1,36 @@
+---
+title: What the Package Does (Title Case)
+name: CJanalyses
+version: 0.0.0
+jms: '1.0'
+authors:
+  - Who wrote it
+maintainer: The package maintainer <yourself@somewhere.net>
+date: '1970-01-01'
+type: R
+description: >-
+  More about what it does (maybe more than one line) Use four spaces when
+  indenting paragraphs within the Description.
+analyses:
+  - title: Bradley-Terry-Luce model and statistics
+    name: BTLanalysis
+    ns: CJanalyses
+    menuGroup: CJanalyses
+    menuTitle: Bradley-Terry-Luce model and statistics
+  - title: Number of Comparisons
+    name: numComp
+    ns: CJanalyses
+    menuGroup: CJanalyses
+    menuTitle: Number of Comparisons
+  - title: Representation seen by judge
+    name: seenByJudge
+    ns: CJanalyses
+    menuGroup: CJanalyses
+    menuTitle: Representation seen by judge
+  - title: Time Analysis
+    name: timeAnalysis
+    ns: CJanalyses
+    menuGroup: CJanalyses
+    menuTitle: Time Analysis
+
+...

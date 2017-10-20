@@ -1,0 +1,105 @@
+---
+name:  timeAnalysis
+title: Time Analysis
+jrs:   '1.1'
+
+items:
+    - name: debugText
+      title: Debug
+      type:  Preformatted
+      visible: TRUE
+      
+    - name: talk
+      title: ""
+      type:  Preformatted
+      
+    - name: table
+      title: Summary
+      type: Group
+      
+      clearWith:
+        - duration
+      
+      items:
+        - name: general
+          title: Overall
+          type: Table
+            
+          columns:
+            - name: N
+              title: N
+              type: integer
+              
+            - name: miss
+              title: Missing
+              type: integer
+              
+            - name: mean
+              title: Mean
+              type: number
+            
+            - name: sd
+              title: sd
+              type: number
+              
+            - name: min
+              title: Min
+              type: integer
+              
+            - name: max
+              title: Max
+              type: integer
+        
+        - name: judge
+          title: Per judge
+          type: Table
+          visible: FALSE
+          
+          clearWith:
+            - Judge
+          
+          columns:
+            - name: judge
+              title: Judge
+              type: text
+            
+            - name: N
+              title: N
+              type: integer
+              
+            - name: miss
+              title: Missing
+              type: integer
+              
+            - name: mean
+              title: Mean
+              type: number
+            
+            - name: sd
+              title: sd
+              type: number
+            
+            - name: min
+              title: Min
+              type: integer
+              
+            - name: max
+              title: Max
+              type: integer
+          
+    - name: plot
+      title: Plot
+      type: Group
+      items:
+        - name: general
+          title: Overall
+          type: Image
+          renderFun: .generalPlot
+          
+        - name: judge
+          title: Per judge
+          type: Image
+          width: 1000
+          height: 1000
+          visible: false
+          renderFun: .judgePlot

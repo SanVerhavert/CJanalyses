@@ -1,0 +1,40 @@
+---
+name:  numComp
+title: Number of Comparisons
+menuGroup: CJanalyses
+version: '1.0.0'
+jas: '1.1'
+
+options:
+    - name: data
+      type: Data
+
+    - name: Repr1
+      title: Representation 1
+      type: Variable
+      permitted: [nominal, nominaltext]
+    
+    - name: Repr2
+      title: Representation 2
+      type: Variable
+      permitted: [nominal, nominaltext]
+      
+    - name: Selected
+      title: Selected
+      type: Variable
+      permitted: [nominal, nominaltext]
+      
+    - name: Judge
+      title: Judge
+      type: Variable
+      permitted: [nominal, nominaltext]
+      
+    - name: byJudge
+      title: By Judge
+      type: Bool
+      default: FALSE
+      
+    - name: byRepr
+      title: By Representation
+      type: Bool
+      default: FALSE
