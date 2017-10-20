@@ -10,7 +10,7 @@ items:
       visible: TRUE
       
     - name: talk
-      title: ""
+      title: "TALK"
       type:  Preformatted
       
     - name: table
@@ -56,11 +56,49 @@ items:
           visible: FALSE
           
           clearWith:
-            - Judge
+            - judge
           
           columns:
             - name: judge
               title: Judge
+              type: text
+            
+            - name: N
+              title: N
+              type: integer
+              
+            - name: miss
+              title: Missing
+              type: integer
+              
+            - name: mean
+              title: Mean
+              type: number
+            
+            - name: sd
+              title: sd
+              type: number
+            
+            - name: min
+              title: Min
+              type: integer
+              
+            - name: max
+              title: Max
+              type: integer
+          
+        - name: repr
+          title: Per representation
+          type: Table
+          visible: FALSE
+          
+          clearWith:
+            - repr1
+            - repr2
+          
+          columns:
+            - name: repr
+              title: Representation
               type: text
             
             - name: N

@@ -1,16 +1,14 @@
 ---
-title: What the Package Does (Title Case)
+title: It does some CJ related alanyses
 name: CJanalyses
-version: 0.0.0
+version: 0.0.1
 jms: '1.0'
 authors:
-  - Who wrote it
-maintainer: The package maintainer <yourself@somewhere.net>
+  - San Verhavert
+maintainer: San Verhavert <san.verhavert@uantwerpen.be>
 date: '1970-01-01'
 type: R
-description: >-
-  More about what it does (maybe more than one line) Use four spaces when
-  indenting paragraphs within the Description.
+description: Just try it out...
 analyses:
   - title: Bradley-Terry-Luce model and statistics
     name: BTLanalysis

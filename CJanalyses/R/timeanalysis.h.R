@@ -8,6 +8,8 @@ timeAnalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         initialize = function(
             duration = NULL,
             judge = NULL,
+            repr1 = NULL,
+            repr2 = NULL,
             filter = NULL, ...) {
 
             super$initialize(
@@ -24,6 +26,12 @@ timeAnalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..judge <- jmvcore::OptionVariable$new(
                 "judge",
                 judge)
+            private$..repr1 <- jmvcore::OptionVariable$new(
+                "repr1",
+                repr1)
+            private$..repr2 <- jmvcore::OptionVariable$new(
+                "repr2",
+                repr2)
             private$..filter <- jmvcore::OptionNumber$new(
                 "filter",
                 filter,
@@ -31,15 +39,21 @@ timeAnalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         
             self$.addOption(private$..duration)
             self$.addOption(private$..judge)
+            self$.addOption(private$..repr1)
+            self$.addOption(private$..repr2)
             self$.addOption(private$..filter)
         }),
     active = list(
         duration = function() private$..duration$value,
         judge = function() private$..judge$value,
+        repr1 = function() private$..repr1$value,
+        repr2 = function() private$..repr2$value,
         filter = function() private$..filter$value),
     private = list(
         ..duration = NA,
         ..judge = NA,
+        ..repr1 = NA,
+        ..repr2 = NA,
         ..filter = NA)
 )
 
@@ -69,15 +83,17 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..talk <- jmvcore::Preformatted$new(
                 options=options,
                 name="talk",
-                title="")
+                title="TALK")
             private$..table <- R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
                     general = function() private$..general,
-                    judge = function() private$..judge),
+                    judge = function() private$..judge,
+                    repr = function() private$..repr),
                 private = list(
                     ..general = NA,
-                    ..judge = NA),
+                    ..judge = NA,
+                    ..repr = NA),
                 public=list(
                     initialize=function(options) {
                         super$initialize(
@@ -119,7 +135,7 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                             title="Per judge",
                             visible=FALSE,
                             clearWith=list(
-                                "Judge"),
+                                "judge"),
                             columns=list(
                                 list(
                                     `name`="judge", 
@@ -149,8 +165,46 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     `name`="max", 
                                     `title`="Max", 
                                     `type`="integer")))
+                        private$..repr <- jmvcore::Table$new(
+                            options=options,
+                            name="repr",
+                            title="Per representation",
+                            visible=FALSE,
+                            clearWith=list(
+                                "repr1",
+                                "repr2"),
+                            columns=list(
+                                list(
+                                    `name`="repr", 
+                                    `title`="Representation", 
+                                    `type`="text"),
+                                list(
+                                    `name`="N", 
+                                    `title`="N", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="miss", 
+                                    `title`="Missing", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="mean", 
+                                    `title`="Mean", 
+                                    `type`="number"),
+                                list(
+                                    `name`="sd", 
+                                    `title`="sd", 
+                                    `type`="number"),
+                                list(
+                                    `name`="min", 
+                                    `title`="Min", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="max", 
+                                    `title`="Max", 
+                                    `type`="integer")))
                         self$add(private$..general)
-                        self$add(private$..judge)}))$new(options=options)
+                        self$add(private$..judge)
+                        self$add(private$..repr)}))$new(options=options)
             private$..plot <- R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -210,6 +264,8 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param data .
 #' @param duration .
 #' @param judge .
+#' @param repr1 .
+#' @param repr2 .
 #' @param filter .
 #' @return A results object containing:
 #' \tabular{llllll}{
@@ -217,6 +273,7 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #'   \code{results$talk} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$table$general} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$table$judge} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$table$repr} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$plot$general} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$plot$judge} \tab \tab \tab \tab \tab an image \cr
 #' }
@@ -226,6 +283,8 @@ timeAnalysis <- function(
     data,
     duration,
     judge,
+    repr1,
+    repr2,
     filter) {
 
     if ( ! requireNamespace('jmvcore'))
@@ -234,6 +293,8 @@ timeAnalysis <- function(
     options <- timeAnalysisOptions$new(
         duration = duration,
         judge = judge,
+        repr1 = repr1,
+        repr2 = repr2,
         filter = filter)
 
     results <- timeAnalysisResults$new(
