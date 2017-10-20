@@ -13,7 +13,30 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           if( is.null( self$options$duration ) )
             return( NULL )
           
+          Data <- self$data
+          Duration <- self$options$duration
+          Filter <- self$options$filter
           
+          duration <- Data[ , Duration ]
+          
+          if( Filter != 0 )
+          {
+            lengthAll <- length( duration )
+            duration <- duration[ duration <= Filter ]
+            
+            outText <- paste0( "Filtered on '<=", Filter, "'!\n",
+                               "Removed ", lengthAll - length( duration ),
+                               " entrie(s)." )
+            
+            rm( lengthAll )
+            
+            self$results$talk$setContent( outText )
+            
+          }
+          
+          durLengthF <- length( duration )
+          
+          duration <- na.omit( duration )
           
           tableGroup <- self$results$table
           plotGroup <- self$results$plot
@@ -25,12 +48,14 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           tableGroup$general$addRow( rowKey = 1,
                                      values = list(
                                        N = length( duration ),
-                                       miss = missLength,
+                                       miss = durLengthF - length( duration ),
                                        mean = resultGen[ "Mean" ],
                                        sd = resultGen[ "sd" ],
                                        min = resultGen[ "Min."],
                                        max = resultGen[ "Max."] )
                                     )
+          
+          rm( durLengthF )
           
           tableGroup$general$setState( resultGen )
           plotGroup$general$setState( duration )
