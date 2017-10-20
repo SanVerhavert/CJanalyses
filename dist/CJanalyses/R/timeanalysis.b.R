@@ -10,122 +10,214 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           # `self$options` contains the options
           # `self$results` contains the results object (to populate)
           
+          # block error when no variables provided
           if( is.null( self$options$duration ) )
             return( NULL )
           
-          duration <- self$options$duration
-          judge <- self$options$Judge
-          filter <- self$options$filter
+          # easy data handling
+          Data <- self$data
+          Duration <- self$options$duration
+          Judge <- self$options$judge
+          Repr1 <- self$options$repr1
+          Repr2 <- self$options$repr2
+          Filter <- self$options$filter
           
-          if( is.null( judge ) )
-          { # if no judge and no repr
-            durationFull <- self$data[[ duration ]]
-            
-            if( filter )
-            { # if filter
-              lengthAll <- length( durationFull )
-              durationFull <- durationFull[ durationFull <= self$options$filter ]
-              
-              outText <- paste0( "Filtered on '<=", self$options$filter, "'!\n",
-                                 "Removed ", lengthAll - length( durationFull ),
-                                 " entrie(s)." )
-              
-              self$results$talk$setContent( outText )
-            } else #turn of filter text
-              self$results$talk$setContent( "" )
-            
-            duration <- na.omit( durationFull )
-          } else #END if no judge no repr
-          { # else juge or repr
-            if( !is.null( judge ) )
-            { # if judge
-              Data <- self$data[ c( duration, judge ) ]
-              
-              if( filter )
-              { #if filter
-                judgeFiltd <- Data[ Data[ , duration ] >= self$options$filter,
-                                    judge ]
-                
-                Data <- Data[ Data[ , duration ] <= self$options$filter, ]
-                
-                outText <- paste0( "Filtered on '<=", self$options$filter, "'!\n",
-                                   "Removed ", length( judgeFiltd ),
-                                   " entrie(s) for Judge(s) ",
-                                   paste( unique( judgeFiltd ), sep = ", " ), "." )
-                
-                self$results$talk$setContent( outText )
-              } else # turn off filter text
-                self$results$talk$setContent( "" )
-              
-              durationFull <- Data[ , duration ]
-              
-              Data <- na.omit( Data )
-              
-              duration <- Data[ , duration ]
-              
-              judge <- Data[ , judge ]
-            } # END if judge
-          } # END else judge or repr
+          duration <- Data[ , Duration ]
           
-          missLength <- length( durationFull ) - length( duration )
+          ## general
+          # filter ----
+          if( Filter != 0 )
+          {
+            lengthAll <- length( duration )
+            duration <- duration[ duration <= Filter ]
+            
+            outText <- paste0( "Filtered on '<=", Filter, "'!\n",
+                               "\nGeneral: Removed ", lengthAll - length( duration ),
+                               " entrie(s).\n" )
+            
+            rm( lengthAll )
+            
+          }
+          
+          # preparation ----
+          durLengthF <- length( duration )
+          
+          duration <- na.omit( duration )
           
           tableGroup <- self$results$table
           plotGroup <- self$results$plot
-           
           
+          ## judge ----
+          if( !is.null( Judge ) )
+          {
+            tableGroup$judge$setVisible( TRUE )
+            plotGroup$judge$setVisible( TRUE )
+            
+            DataJudge <- Data[ c( Duration, Judge ) ]
+            names( DataJudge ) <- c( "Duration", "Judge" )
+            
+            # filter ----
+            if( Filter != 0 )
+            {
+              judgeFiltd <- DataJudge$Judge[ DataJudge$Duration >= Filter ]
+
+              DataJudge <- DataJudge[ DataJudge$Duration <= Filter, ]
+
+              outText <- paste0( outText,
+                                 "\nJudge: Removed ", length( judgeFiltd ),
+                                 " entrie(s) for Judge(s) ",
+                                 paste( unique( judgeFiltd ), collapse = ", " ), ".\n" )
+
+              rm( judgeFiltd )
+
+            }
+          }
+          
+          ## repr
+          if( !is.null( Repr1 ) & !is.null( Repr2 ) )
+          {
+            tableGroup$repr$setVisible( TRUE )
+            plotGroup$repr$setVisible( TRUE )
+            
+            DataRepr1 <- data.frame( Duration = Data[ , Duration ],
+                                     Repr = Data[ , Repr1 ])
+            DataRepr2 <- data.frame( Duration = Data[ , Duration ],
+                                    Repr = Data[ , Repr2 ] )
+            DataLong <- rbind( DataRepr1, DataRepr2 )
+            
+            rm( DataRepr1, DataRepr2 )
+            
+            # filter ----
+            if( Filter != 0 )
+            {
+              reprFiltd <- DataLong$Repr[ DataLong$Duration >= Filter ]
+
+              DataLong <- DataLong[ DataLong$Duration <= Filter, ]
+              
+              outText <- paste0( outText,
+                                 "\nRepresentation: Removed ", length( reprFiltd ),
+                                 " entrie(s) for representations(s) ",
+                                 paste( unique( reprFiltd ), collapse = ", " ), "." )
+              
+              rm( reprFiltd )
+
+            }
+          }
+          
+          ## Filter talk ---- 
+          if( Filter != 0 )
+          {
+            self$results$talk$setVisible( TRUE )
+            
+            outText <- strwrap( x = outText, width = 105, exdent = 2 )
+            self$results$talk$setContent( outText )
+          }else
+          {
+            self$results$talk$setVisible( FALSE )
+            self$results$talk$setContent( "" )
+          }
+          
+          ## general ----
+          # summary ----
           resultGen <- summary( duration )
           resultGen <- c( resultGen, sd = sd( duration ) )
           
+          # output ----
           tableGroup$general$addRow( rowKey = 1,
                                      values = list(
                                        N = length( duration ),
-                                       miss = missLength,
+                                       miss = durLengthF - length( duration ),
                                        mean = resultGen[ "Mean" ],
                                        sd = resultGen[ "sd" ],
                                        min = resultGen[ "Min."],
                                        max = resultGen[ "Max."] )
                                     )
           
+          rm( durLengthF )
+          
           tableGroup$general$setState( resultGen )
           plotGroup$general$setState( duration )
-            
-          if( !is.null( self$options$Judge ) )
+          
+          ## Judge ----
+          if( !is.null( Judge ) )
           {
-            tableGroup$judge$setVisible( TRUE )
-            plotGroup$judge$setVisible( TRUE )
+            # split and summary ----
+            judgeSplit <- by( data = DataJudge$Duration,
+                                INDICES = DataJudge$Judge,
+                                FUN = function( x ){
+                                  totLength <- length(x)
+                                  x <- na.omit(x)
+                                  res <- summary(x)
+                                  res <- c( res, sd = sd(x) )
+                                  res <- c( res, N = length(x) )
+                                  c( res, miss = totLength - res[ "N" ] )
+                                } )
+
+            # output ----
+            for( i in 1:length( judgeSplit ) )
+            {
+              tableGroup$judge$addRow( rowKey = i,
+                                       values = list(
+                                         judge = names( judgeSplit )[i],
+                                         N = judgeSplit[[i]][ "N" ],
+                                         miss = judgeSplit[[i]][ "miss.N" ],
+                                         mean = judgeSplit[[i]][ "Mean" ],
+                                         sd = judgeSplit[[i]]["sd" ],
+                                         min = judgeSplit[[i]][ "Min." ],
+                                         max = judgeSplit[[i]][ "Max." ] )
+                                       )
+            }
+            rm(i)
             
-            plotGroup$judge$setState( by( data = duration, INDICES = judge,
+            plotGroup$judge$setState( by( data = DataJudge$Duration,
+                                          INDICES = DataJudge$Judge,
                                           FUN = na.omit ) )
             
-            resultsSplit <- by( data = duration, INDICES = judge,
-                                FUN = function( x ){ 
+            tableGroup$judge$setState( judgeSplit )
+
+          } else tableGroup$judge$setVisible( FALSE )
+          
+          ## repr ----
+          if( exists( "DataLong" ) )
+          {
+            # split and summary ----
+            reprSplit <- by( data = DataLong$Duration,
+                                INDICES = DataLong$Repr,
+                                FUN = function( x ){
                                   totLength <- length(x)
                                   x <- na.omit(x)
                                   res <- summary(x)
                                   res <- c( res, sd = sd(x) )
                                   res <- c( res, N = length(x) )
                                   res <- c( res, miss = totLength - res[ "N" ] )
+                                  c( res, total = sum( x ) )
                                 } )
             
-            for( i in 1:length( resultsSplit ) )
+            # output ----
+            for( i in 1:length( reprSplit ) )
             {
-              tableGroup$judge$addRow( rowKey = i,
+              tableGroup$repr$addRow( rowKey = i,
                                        values = list(
-                                         judge = names( resultsSplit )[i],
-                                         N = resultsSplit[[i]][ "N" ],
-                                         miss = resultsSplit[[i]][ "miss.N" ],
-                                         mean = resultsSplit[[i]][ "Mean" ],
-                                         sd = resultsSplit[[i]]["sd" ],
-                                         min = resultsSplit[[i]][ "Min." ],
-                                         max = resultsSplit[[i]][ "Max." ] )
-                                       )
+                                         repr = names( reprSplit )[i],
+                                         N = reprSplit[[i]][ "N" ],
+                                         miss = reprSplit[[i]][ "miss.N" ],
+                                         total = reprSplit[[i]][ "total" ],
+                                         mean = reprSplit[[i]][ "Mean" ],
+                                         sd = reprSplit[[i]]["sd" ],
+                                         min = reprSplit[[i]][ "Min." ],
+                                         max = reprSplit[[i]][ "Max." ] )
+              )
             }
             rm(i)
             
-            tableGroup$judge$setState( resultsSplit )
+            plotGroup$repr$setState( by( data = DataLong$Duration,
+                                          INDICES = DataLong$Repr,
+                                          FUN = na.omit ) )
             
-          } else tableGroup$judge$setVisible( FALSE )
-          
+            tableGroup$repr$setState( reprSplit )
+            
+          } else tableGroup$repr$setVisible( FALSE )
+
         },
         .generalPlot = function( ... ) {
           if( is.null( self$results$table$general$state ) )
@@ -148,6 +240,51 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           resultGen <- self$results$table$general$state
           resultSplit <- self$results$table$judge$state
           duration <- self$results$plot$judge$state
+
+          plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
+          plotCol <- plotCol( length( duration ) )
+
+          matDat <- 1:length( resultSplit )
+
+          if( ( length( resultSplit ) %% 3 ) > 0 )
+          {
+            matDat <- c( matDat, rep( 0, times = 3 - length( resultSplit ) %% 3 ) )
+          }
+
+          layoutMat <- matrix( data = matDat, ncol = 3, byrow = T )
+
+          layoutMat <- cbind( layoutMat, rep( length( resultSplit ) + 1,
+                                              times = nrow( layoutMat ) )
+                              )
+
+          par( oma = c( 0, 0, 2, 0 ) )
+
+          layout( mat = layoutMat, widths = c( rep( 2, times = ncol( layoutMat - 1 ) ),
+                                               1 ) )
+
+          for( i in 1:length( duration ) )
+          {
+            hist( x = duration[[i]], main = names( duration )[i],
+                  xlab = "Durations", ylab = "Freq",
+                  col = plotCol[i] )
+            abline( v = resultGen[ "Mean" ], col = "#c24446", lty = 2 )
+            abline( v = resultSplit[[i]][ "Mean" ], col = "#a0c178", lty = 2 )
+          }
+          rm(i)
+
+          plot.new()
+          legend( "topleft", legend = c( "General mean", "Group mean" ),
+                  col = c( "#c24446", "#a0c178" ), lty = 2 )
+
+          title( main = "Histogram of judgement duration", sub = "Per Judge",
+                 outer = T, cex.main = 2 )
+
+          TRUE
+        },
+        .reprPlot = function( ... ) {
+          resultGen <- self$results$table$general$state
+          resultSplit <- self$results$table$repr$state
+          duration <- self$results$plot$repr$state
           
           plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
           plotCol <- plotCol( length( duration ) )
@@ -163,7 +300,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           
           layoutMat <- cbind( layoutMat, rep( length( resultSplit ) + 1,
                                               times = nrow( layoutMat ) )
-                              )
+          )
           
           par( oma = c( 0, 0, 2, 0 ) )
           
@@ -172,11 +309,14 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           
           for( i in 1:length( duration ) )
           {
-            hist( x = duration[[i]], main = names( duration )[i],
-                  xlab = "Durations", ylab = "Freq",
-                  col = plotCol[i] )
+            histObj <- hist( x = duration[[i]], main = names( duration )[i],
+                             xlab = "Durations", ylab = "Freq",
+                             col = plotCol[i] )
             abline( v = resultGen[ "Mean" ], col = "#c24446", lty = 2 )
             abline( v = resultSplit[[i]][ "Mean" ], col = "#a0c178", lty = 2 )
+            text( x = max( histObj$mids ), y = max( histObj$counts ),
+                  labels = paste0( "Total duration: ", resultSplit[[i]][ "total" ] ),
+                  xpd = T )
           }
           rm(i)
           

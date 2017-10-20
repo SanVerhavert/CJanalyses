@@ -14,8 +14,16 @@ options:
       type: Variable
       permitted: [ continuous ]
     
-    - name: Judge
+    - name: judge
       title: Judge
+      type: Variable
+      
+    - name: repr1
+      title: Representation 1
+      type: Variable
+    
+    - name: repr2
+      title: Representation 2
       type: Variable
       
     - name: filter

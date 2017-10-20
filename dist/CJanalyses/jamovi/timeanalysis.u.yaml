@@ -19,7 +19,21 @@ children:
         label: Judge
         children:
           - type: VariablesListBox
-            name: Judge
+            name: judge
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Representation 1
+        children:
+          - type: VariablesListBox
+            name: repr1
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Representation 2
+        children:
+          - type: VariablesListBox
+            name: repr2
             maxItemCount: 1
             isTarget: true
   - type: LayoutBox
