@@ -70,7 +70,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       
       self$results$text$setContent( outText )
       
-      Abil <- BTLm( Data = Data[ , 2:4 ] )
+      Abil <- BTLm( Data = Data[ , c( "Repr1", "Repr2", "Score" ) ] )
       
       #---------------------------------------------------------------------
       

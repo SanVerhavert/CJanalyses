@@ -1,0 +1,45 @@
+---
+name:  relEvol
+title: Reliability Evolution
+menuGroup: CJanalyses
+version: '1.0.0'
+jas: '1.1'
+
+options:
+    - name: data
+      type: Data
+
+    - name: Judge
+      title: Judge
+      type: Variable
+      
+    - name: Repr1
+      title: Representation 1
+      type: Variable
+      
+    - name: Repr2
+      title: Representation 2
+      type: Variable
+      
+    - name: Selected
+      title: Selected Representation
+      type: Variable
+      
+    - name: OrderOn
+      title: Order on
+      type: Variable
+      
+    - name: rel70
+      title: draw SSR=.70 line
+      type: Bool
+      default: FALSE
+      
+    - name: rel80
+      title: draw SSR=.80 line
+      type: Bool
+      default: FALSE
+      
+    - name: relMax
+      title: draw maximal SSR line
+      type: Bool
+      default: FALSE
