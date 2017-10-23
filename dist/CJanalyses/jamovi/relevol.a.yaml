@@ -43,3 +43,13 @@ options:
       title: draw maximal SSR line
       type: Bool
       default: FALSE
+      
+    - name: nJudges
+      title: Number of judges per round
+      type: Bool
+      default: FALSE
+      
+    - name: judgeRounds
+      title: Number of judgements per judge per round
+      type: Bool
+      default: FALSE

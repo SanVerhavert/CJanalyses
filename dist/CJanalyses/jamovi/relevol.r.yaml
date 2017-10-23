@@ -7,7 +7,7 @@ items:
     - name: debugText
       title: Debug
       type: Preformatted
-      visible: FALSE
+      visible: TRUE
       
     - name:  Warning
       title: ""
@@ -37,3 +37,11 @@ items:
       width: 600
       height: 500
       renderFun: .evolPlot
+      
+    - name: judgePlot
+      title: ""
+      type: Image
+      width: 600
+      height: 500
+      renderFun: .judgeRound
+      visible: FALSE

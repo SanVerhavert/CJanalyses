@@ -13,7 +13,9 @@ relEvolOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             OrderOn = NULL,
             rel70 = FALSE,
             rel80 = FALSE,
-            relMax = FALSE, ...) {
+            relMax = FALSE,
+            nJudges = FALSE,
+            judgeRounds = FALSE, ...) {
 
             super$initialize(
                 package='CJanalyses',
@@ -48,6 +50,14 @@ relEvolOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
                 "relMax",
                 relMax,
                 default=FALSE)
+            private$..nJudges <- jmvcore::OptionBool$new(
+                "nJudges",
+                nJudges,
+                default=FALSE)
+            private$..judgeRounds <- jmvcore::OptionBool$new(
+                "judgeRounds",
+                judgeRounds,
+                default=FALSE)
         
             self$.addOption(private$..Judge)
             self$.addOption(private$..Repr1)
@@ -57,6 +67,8 @@ relEvolOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             self$.addOption(private$..rel70)
             self$.addOption(private$..rel80)
             self$.addOption(private$..relMax)
+            self$.addOption(private$..nJudges)
+            self$.addOption(private$..judgeRounds)
         }),
     active = list(
         Judge = function() private$..Judge$value,
@@ -66,7 +78,9 @@ relEvolOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         OrderOn = function() private$..OrderOn$value,
         rel70 = function() private$..rel70$value,
         rel80 = function() private$..rel80$value,
-        relMax = function() private$..relMax$value),
+        relMax = function() private$..relMax$value,
+        nJudges = function() private$..nJudges$value,
+        judgeRounds = function() private$..judgeRounds$value),
     private = list(
         ..Judge = NA,
         ..Repr1 = NA,
@@ -75,7 +89,9 @@ relEvolOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
         ..OrderOn = NA,
         ..rel70 = NA,
         ..rel80 = NA,
-        ..relMax = NA)
+        ..relMax = NA,
+        ..nJudges = NA,
+        ..judgeRounds = NA)
 )
 
 relEvolResults <- if (requireNamespace('jmvcore')) R6::R6Class(
@@ -84,12 +100,14 @@ relEvolResults <- if (requireNamespace('jmvcore')) R6::R6Class(
         debugText = function() private$..debugText,
         Warning = function() private$..Warning,
         table = function() private$..table,
-        reliabPlot = function() private$..reliabPlot),
+        reliabPlot = function() private$..reliabPlot,
+        judgePlot = function() private$..judgePlot),
     private = list(
         ..debugText = NA,
         ..Warning = NA,
         ..table = NA,
-        ..reliabPlot = NA),
+        ..reliabPlot = NA,
+        ..judgePlot = NA),
     public=list(
         initialize=function(options) {
             super$initialize(
@@ -130,10 +148,19 @@ relEvolResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 width=600,
                 height=500,
                 renderFun=".evolPlot")
+            private$..judgePlot <- jmvcore::Image$new(
+                options=options,
+                name="judgePlot",
+                title="",
+                width=600,
+                height=500,
+                renderFun=".judgeRound",
+                visible=FALSE)
             self$add(private$..debugText)
             self$add(private$..Warning)
             self$add(private$..table)
-            self$add(private$..reliabPlot)}))
+            self$add(private$..reliabPlot)
+            self$add(private$..judgePlot)}))
 
 relEvolBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     "relEvolBase",
@@ -166,12 +193,15 @@ relEvolBase <- if (requireNamespace('jmvcore')) R6::R6Class(
 #' @param rel70 .
 #' @param rel80 .
 #' @param relMax .
+#' @param nJudges .
+#' @param judgeRounds .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$debugText} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$Warning} \tab \tab \tab \tab \tab a preformatted \cr
 #'   \code{results$table} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$reliabPlot} \tab \tab \tab \tab \tab an image \cr
+#'   \code{results$judgePlot} \tab \tab \tab \tab \tab an image \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -190,7 +220,9 @@ relEvol <- function(
     OrderOn,
     rel70 = FALSE,
     rel80 = FALSE,
-    relMax = FALSE) {
+    relMax = FALSE,
+    nJudges = FALSE,
+    judgeRounds = FALSE) {
 
     if ( ! requireNamespace('jmvcore'))
         stop('relEvol requires jmvcore to be installed (restart may be required)')
@@ -203,7 +235,9 @@ relEvol <- function(
         OrderOn = OrderOn,
         rel70 = rel70,
         rel80 = rel80,
-        relMax = relMax)
+        relMax = relMax,
+        nJudges = nJudges,
+        judgeRounds = judgeRounds)
 
     results <- relEvolResults$new(
         options = options)
