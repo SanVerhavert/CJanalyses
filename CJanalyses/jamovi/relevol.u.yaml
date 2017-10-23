@@ -43,3 +43,12 @@ children:
             name: OrderOn
             maxItemCount: 1
             isTarget: true
+  - type: LayoutBox
+    margin: large
+    children:
+      - type: CheckBox
+        name: rel70
+      - type: CheckBox
+        name: rel80
+      - type: CheckBox
+        name: relMax

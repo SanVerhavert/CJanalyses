@@ -1,6 +1,3 @@
-
-# This file is a generated template, your changes will not be overwritten
-
 relEvolClass <- if (requireNamespace('jmvcore')) R6::R6Class(
     "relEvolClass",
     inherit = relEvolBase,
@@ -32,8 +29,6 @@ relEvolClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         Data$Repr2 <- as.character( Data$Repr2 )
         Data$Selected <- as.character( Data$Selected )
         
-        Data <- na.omit( Data )
-        
         Repr <- unique( c( Data$Repr1, Data$Repr2 ) )
         
         #---------------------------------------------------------------------
@@ -58,7 +53,8 @@ relEvolClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         } else
         {
           self$results$Warning$setVisible( TRUE )
-          self$results$Warning$setContent( "!! Warning! Data not sorted before calculations! !!")
+          warnText <- "!! Warning! Data not sorted before calculations! !!"
+          self$results$Warning$setContent( warnText )
         }
         
         # Calculate Rounds ----
@@ -94,7 +90,8 @@ relEvolClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           Ability <- BTLm( Data = DataSub[ , c( "Repr1", "Repr2", "Score" ) ] )
 
           ### reliability ###
-          reliabEvol$reliability[i] <- reliability( Abildf = Ability )
+          reliabEvol$reliability[i] <- round( reliability( Abildf = Ability ),
+                                              digits = 2 )
 
           if( i > 1 )
           {
@@ -117,5 +114,54 @@ relEvolClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         rm(i)
 
         self$results$table$setState( reliabEvol )
+      },
+      .evolPlot = function( ... ) {
+        # block error when no variables provided
+        if( is.null( self$options$Judge ) |
+            is.null( self$options$Repr1 ) |
+            is.null( self$options$Repr2 ) |
+            is.null( self$options$Selected ) |
+            is.null( self$options$OrderOn ) )
+          return( NULL )
+        
+        reliabEvol <- self$results$table$state
+        
+        reliabEvol <- reliabEvol[ -1, ] 
+        
+        par( mar = c( 5, 4, 4, 4 ) )
+        
+        plot( reliabEvol$rounds, reliabEvol$reliability, type = "b",
+              main = "Reliability evolution plot\nWith returns",
+              xlab = "Rounds", ylab = "SSR", ylim = c( 0, 1), xaxt = "n" )
+        lines( reliabEvol$rounds, reliabEvol$returns, type = "b", col = "grey50" )
+        
+        abline( h = 0.01, lty = 2, col = "grey" )
+        
+        axis( side = 1, at = 1:max( reliabEvol$rounds ) )
+        axis( side = 4, col = "grey50",
+              col.axis = "grey50" )
+        mtext( "Returns", side = 4, line = 3, cex = par("cex.lab"), col = "grey50" )
+        
+        if( self$options$rel70 )
+        {
+          
+          abline( h = .70, lty = 2 )
+          text( x = 1.5, y = .72, pos = 4, labels = "SSR=.70" )
+        }
+        
+        if( self$options$rel80 )
+        {
+          abline( h = .80, lty = 2 )
+          text( x = 1.5, y = .82, pos = 4, labels = "SSR=.80", lty = 2 )
+        }
+        
+        if( self$options$relMax )
+        {
+          abline( h = max( reliabEvol$reliability ), lty = 2 )
+          text( x = 1.5, y = max( reliabEvol$reliability ) + 0.02, pos = 4, 
+                labels = paste0( "SSR=", max( reliabEvol$reliability ) ))
+        }
+        
+        TRUE
       } )
 )

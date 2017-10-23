@@ -7,7 +7,7 @@ items:
     - name: debugText
       title: Debug
       type: Preformatted
-      visible: TRUE
+      visible: FALSE
       
     - name:  Warning
       title: ""
@@ -20,7 +20,7 @@ items:
       
       columns:
         - name: RoundNo
-          title: Round numner
+          title: Round number
           type: integer
           
         - name: Rel
@@ -30,3 +30,10 @@ items:
         - name: Returns
           title: Returns
           type: number
+    
+    - name: reliabPlot
+      title: ""
+      type: Image
+      width: 600
+      height: 500
+      renderFun: .evolPlot

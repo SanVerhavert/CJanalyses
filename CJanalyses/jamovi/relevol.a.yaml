@@ -28,3 +28,18 @@ options:
     - name: OrderOn
       title: Order on
       type: Variable
+      
+    - name: rel70
+      title: draw SSR=.70 line
+      type: Bool
+      default: FALSE
+      
+    - name: rel80
+      title: draw SSR=.80 line
+      type: Bool
+      default: FALSE
+      
+    - name: relMax
+      title: draw maximal SSR line
+      type: Bool
+      default: FALSE
