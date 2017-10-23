@@ -52,3 +52,7 @@ children:
         name: rel80
       - type: CheckBox
         name: relMax
+      - type: CheckBox
+        name: nJudges
+      - type: CheckBox
+        name: judgeRounds
