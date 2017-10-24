@@ -149,7 +149,7 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 options=options,
                 name="debugText",
                 title="Debug",
-                visible=FALSE)
+                visible=TRUE)
             private$..text <- jmvcore::Preformatted$new(
                 options=options,
                 name="text")

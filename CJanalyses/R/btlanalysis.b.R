@@ -36,8 +36,11 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       Data <- calcScore( Data = Data )
       #---------------------------------------------------------------------
       
-      image <- self$results$mainTitle$networkPlot
-      image$setState( Score2igraph( Data[ , 2:4] ) )
+      if( self$options$plotGraph )
+      {
+        image <- self$results$mainTitle$networkPlot
+        image$setState( Score2igraph( Data[ , c( "Repr1", "Repr2", "Score" ) ] ) )
+      }
       
       # Estimate (core analysis) ----
       ### Preparations ###
