@@ -1,7 +1,7 @@
 ---
 name:  BTLanalysis
 title: Bradley-Terry-Luce model and statistics
-menuGroup: CJanalyses
+menuGroup: DPACanalyses
 version: '1.0.0'
 jas: '1.1'
 

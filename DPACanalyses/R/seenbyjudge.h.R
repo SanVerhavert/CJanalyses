@@ -11,7 +11,7 @@ seenByJudgeOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             Judge = NULL, ...) {
 
             super$initialize(
-                package='CJanalyses',
+                package='DPACanalyses',
                 name='seenByJudge',
                 requiresData=TRUE,
                 ...)
@@ -90,7 +90,7 @@ seenByJudgeBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     public = list(
         initialize = function(options, data=NULL, datasetId="", analysisId="", revision=0) {
             super$initialize(
-                package = 'CJanalyses',
+                package = 'DPACanalyses',
                 name = 'seenByJudge',
                 version = c(1,0,0),
                 options = options,

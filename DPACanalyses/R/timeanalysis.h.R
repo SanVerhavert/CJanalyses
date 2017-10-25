@@ -13,7 +13,7 @@ timeAnalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             filter = NULL, ...) {
 
             super$initialize(
-                package='CJanalyses',
+                package='DPACanalyses',
                 name='timeAnalysis',
                 requiresData=TRUE,
                 ...)
@@ -261,7 +261,7 @@ timeAnalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     public = list(
         initialize = function(options, data=NULL, datasetId="", analysisId="", revision=0) {
             super$initialize(
-                package = 'CJanalyses',
+                package = 'DPACanalyses',
                 name = 'timeAnalysis',
                 version = c(1,0,0),
                 options = options,

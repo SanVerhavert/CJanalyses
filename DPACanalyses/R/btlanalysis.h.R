@@ -20,7 +20,7 @@ BTLanalysisOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             misfitPlot = FALSE, ...) {
 
             super$initialize(
-                package='CJanalyses',
+                package='DPACanalyses',
                 name='BTLanalysis',
                 requiresData=TRUE,
                 ...)
@@ -338,7 +338,7 @@ BTLanalysisBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     public = list(
         initialize = function(options, data=NULL, datasetId="", analysisId="", revision=0) {
             super$initialize(
-                package = 'CJanalyses',
+                package = 'DPACanalyses',
                 name = 'BTLanalysis',
                 version = c(1,0,0),
                 options = options,

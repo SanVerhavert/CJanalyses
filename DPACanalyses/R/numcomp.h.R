@@ -14,7 +14,7 @@ numCompOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             byRepr = FALSE, ...) {
 
             super$initialize(
-                package='CJanalyses',
+                package='DPACanalyses',
                 name='numComp',
                 requiresData=TRUE,
                 ...)
@@ -144,7 +144,7 @@ numCompBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     public = list(
         initialize = function(options, data=NULL, datasetId="", analysisId="", revision=0) {
             super$initialize(
-                package = 'CJanalyses',
+                package = 'DPACanalyses',
                 name = 'numComp',
                 version = c(1,0,0),
                 options = options,

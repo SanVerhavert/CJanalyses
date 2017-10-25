@@ -28,5 +28,5 @@ options(jamovi_home = "C:/Program Files/jamovi 0.8.0.8" )
 setwd( "C:/Users/SVerhavert/Desktop/Set up jamovi module" )
 
 ### install the module
-jmvtools::install( "CJanalyses" )
+jmvtools::install( "DPACanalyses" )
 

@@ -1,7 +1,7 @@
 ---
 name:  seenByJudge
 title: Representation seen by judge
-menuGroup: CJanalyses
+menuGroup: DPACanalyses
 version: '1.0.0'
 jas: '1.1'
 

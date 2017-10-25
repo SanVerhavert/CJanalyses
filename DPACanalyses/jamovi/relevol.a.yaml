@@ -1,7 +1,7 @@
 ---
 name:  relEvol
 title: Reliability Evolution
-menuGroup: CJanalyses
+menuGroup: DPACanalyses
 version: '1.0.0'
 jas: '1.1'
 

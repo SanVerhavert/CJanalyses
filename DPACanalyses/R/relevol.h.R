@@ -18,7 +18,7 @@ relEvolOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             judgeRounds = FALSE, ...) {
 
             super$initialize(
-                package='CJanalyses',
+                package='DPACanalyses',
                 name='relEvol',
                 requiresData=TRUE,
                 ...)
@@ -168,7 +168,7 @@ relEvolBase <- if (requireNamespace('jmvcore')) R6::R6Class(
     public = list(
         initialize = function(options, data=NULL, datasetId="", analysisId="", revision=0) {
             super$initialize(
-                package = 'CJanalyses',
+                package = 'DPACanalyses',
                 name = 'relEvol',
                 version = c(1,0,0),
                 options = options,
