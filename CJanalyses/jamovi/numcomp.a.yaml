@@ -32,7 +32,7 @@ options:
     - name: byJudge
       title: By Judge
       type: Bool
-      default: FALSE
+      default: TRUE
       
     - name: byRepr
       title: By Representation

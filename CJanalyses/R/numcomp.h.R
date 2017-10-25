@@ -10,7 +10,7 @@ numCompOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             Repr2 = NULL,
             Selected = NULL,
             Judge = NULL,
-            byJudge = FALSE,
+            byJudge = TRUE,
             byRepr = FALSE, ...) {
 
             super$initialize(
@@ -46,7 +46,7 @@ numCompOptions <- if (requireNamespace('jmvcore')) R6::R6Class(
             private$..byJudge <- jmvcore::OptionBool$new(
                 "byJudge",
                 byJudge,
-                default=FALSE)
+                default=TRUE)
             private$..byRepr <- jmvcore::OptionBool$new(
                 "byRepr",
                 byRepr,
@@ -187,7 +187,7 @@ numComp <- function(
     Repr2,
     Selected,
     Judge,
-    byJudge = FALSE,
+    byJudge = TRUE,
     byRepr = FALSE) {
 
     if ( ! requireNamespace('jmvcore'))

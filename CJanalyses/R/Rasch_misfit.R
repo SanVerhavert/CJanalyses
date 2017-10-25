@@ -65,8 +65,8 @@ Rasch.misfit<-function( Data, Abil, By.Judge, boundCalc )
   ## calculate infit statistics ( mean +- 2 * sd )
   meanInfit <- mean( outFrame$Infit )
   sdInfit <- sd( outFrame$Infit )
-  upperBound <- meanInfit + ( 2 * sdInfit )
-  lowerBound <- meanInfit - ( 2 * sdInfit )
+  upperBound <- meanInfit + ( boundCalc * sdInfit )
+  lowerBound <- meanInfit - ( boundCalc * sdInfit )
   
   outFrame$Flag <- as.character( ifelse( outFrame$Infit >= upperBound,
                                               "*", "-" ) )
