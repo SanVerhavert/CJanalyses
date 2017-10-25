@@ -1,0 +1,41 @@
+---
+title: D-PAC analyses
+name: DPACanalyses
+version: 0.0.1
+jms: '1.0'
+authors:
+  - San Verhavert
+maintainer: San Verhavert <san.verhavert@uantwerpen.be>
+date: '1970-01-01'
+type: R
+description: >-
+  This package contains analyses you can conduct on Comparative Judgement data
+  comming out of the D-PAC tool
+analyses:
+  - title: Bradley-Terry-Luce model and statistics
+    name: BTLanalysis
+    ns: DPACanalyses
+    menuGroup: DPACanalyses
+    menuTitle: Bradley-Terry-Luce model and statistics
+  - title: Number of Comparisons
+    name: numComp
+    ns: DPACanalyses
+    menuGroup: DPACanalyses
+    menuTitle: Number of Comparisons
+  - title: Reliability Evolution
+    name: relEvol
+    ns: DPACanalyses
+    menuGroup: DPACanalyses
+    menuTitle: Reliability Evolution
+  - title: Representation seen by judge
+    name: seenByJudge
+    ns: DPACanalyses
+    menuGroup: DPACanalyses
+    menuTitle: Representation seen by judge
+  - title: Time Analysis
+    name: timeAnalysis
+    ns: DPACanalyses
+    menuGroup: DPACanalyses
+    menuTitle: Time Analysis
+
+...

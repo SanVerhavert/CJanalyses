@@ -1,0 +1,32 @@
+---
+name:  timeAnalysis
+title: Time Analysis
+menuGroup: DPACanalyses
+version: '1.0.0'
+jas: '1.1'
+
+options:
+    - name: data
+      type: Data
+
+    - name: duration
+      title: Duration
+      type: Variable
+      permitted: [ continuous ]
+    
+    - name: judge
+      title: Judge
+      type: Variable
+      
+    - name: repr1
+      title: Representation 1
+      type: Variable
+    
+    - name: repr2
+      title: Representation 2
+      type: Variable
+      
+    - name: filter
+      title: Filter
+      type: Number
+      min: 0

@@ -1,0 +1,47 @@
+---
+name:  relEvol
+title: Reliability evolution
+jrs:   '1.1'
+
+items:
+    - name: debugText
+      title: Debug
+      type: Preformatted
+      visible: TRUE
+      
+    - name:  Warning
+      title: ""
+      type:  Preformatted
+      visible: FALSE
+     
+    - name: table
+      title: Reliability Evolution
+      type: Table
+      
+      columns:
+        - name: RoundNo
+          title: Round number
+          type: integer
+          
+        - name: Rel
+          title: Reliability
+          type: number
+          
+        - name: Returns
+          title: Returns
+          type: number
+    
+    - name: reliabPlot
+      title: ""
+      type: Image
+      width: 600
+      height: 500
+      renderFun: .evolPlot
+      
+    - name: judgePlot
+      title: ""
+      type: Image
+      width: 600
+      height: 500
+      renderFun: .judgeRound
+      visible: FALSE

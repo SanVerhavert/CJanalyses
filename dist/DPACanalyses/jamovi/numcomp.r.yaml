@@ -1,0 +1,50 @@
+---
+name:  numComp
+title: Number of Comparisons
+jrs:   '1.1'
+
+items:
+    - name: debugText
+      title: Debug
+      type: Preformatted
+      visible: FALSE
+      
+    - name: judgeTable
+      title: Judge
+      visible: false
+      type: Table
+      
+      clearWith: 
+        - Repr1
+        - Repr2
+        - Selected
+        - Judge
+        
+      columns:
+        - name: Judge
+          title: Judge
+          type: text
+        
+        - name: nComp
+          title: Number of Comparisons
+          type: integer
+              
+    - name: reprTable
+      title: Representation
+      visible: false
+      type: Table
+      
+      clearWith: 
+        - Repr1
+        - Repr2
+        - Selected
+        - Judge
+      
+      columns:
+        - name: Repr
+          title: Representation
+          type: text
+            
+        - name: nComp
+          title: Number of Comparisons
+          type: integer
