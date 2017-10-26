@@ -35,8 +35,8 @@ items:
               title: Missing
               type: integer
               
-            - name: mean
-              title: Mean
+            - name: median
+              title: Median
               type: number
             
             - name: sd
@@ -72,8 +72,8 @@ items:
               title: Missing
               type: integer
               
-            - name: mean
-              title: Mean
+            - name: median
+              title: Median
               type: number
             
             - name: sd
@@ -114,8 +114,8 @@ items:
               title: Total viewing time
               type: integer
               
-            - name: mean
-              title: Mean
+            - name: median
+              title: Median
               type: number
             
             - name: sd
