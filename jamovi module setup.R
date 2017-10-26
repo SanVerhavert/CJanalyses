@@ -6,6 +6,11 @@
 ################################################################################
 ################################################################################
 
+### If you do not work with the R project (.Rproj) file
+### Set the working directory to where you downloaded the folder
+setwd( "" )
+#-------------------------------------------------------------------------------
+
 #### Preparation ####
 ### install package jmvtools
 install.packages( "jmvtools", repos=c('https://repo.jamovi.org',
@@ -24,8 +29,7 @@ jmvtools::check( home = "C:/Program Files/jamovi 0.8.0.8" )
 options(jamovi_home = "C:/Program Files/jamovi 0.8.0.8" )
 
 #### install JAMOVI module ####
-### Set the working directory to where you downloaded the folder
-setwd( "C:/Users/SVerhavert/Desktop/Set up jamovi module" )
+
 
 ### install the module
 jmvtools::install( "DPACanalyses" )
