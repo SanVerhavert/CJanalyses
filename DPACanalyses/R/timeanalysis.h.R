@@ -115,8 +115,8 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     `title`="Missing", 
                                     `type`="integer"),
                                 list(
-                                    `name`="mean", 
-                                    `title`="Mean", 
+                                    `name`="median", 
+                                    `title`="Median", 
                                     `type`="number"),
                                 list(
                                     `name`="sd", 
@@ -151,8 +151,8 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     `title`="Missing", 
                                     `type`="integer"),
                                 list(
-                                    `name`="mean", 
-                                    `title`="Mean", 
+                                    `name`="median", 
+                                    `title`="Median", 
                                     `type`="number"),
                                 list(
                                     `name`="sd", 
@@ -192,8 +192,8 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                     `title`="Total viewing time", 
                                     `type`="integer"),
                                 list(
-                                    `name`="mean", 
-                                    `title`="Mean", 
+                                    `name`="median", 
+                                    `title`="Median", 
                                     `type`="number"),
                                 list(
                                     `name`="sd", 

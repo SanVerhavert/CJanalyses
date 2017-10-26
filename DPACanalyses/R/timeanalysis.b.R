@@ -127,7 +127,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                                      values = list(
                                        N = length( duration ),
                                        miss = durLengthF - length( duration ),
-                                       mean = resultGen[ "Mean" ],
+                                       median = resultGen[ "Median" ],
                                        sd = resultGen[ "sd" ],
                                        min = resultGen[ "Min."],
                                        max = resultGen[ "Max."] )
@@ -161,7 +161,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                                          judge = names( judgeSplit )[i],
                                          N = judgeSplit[[i]][ "N" ],
                                          miss = judgeSplit[[i]][ "miss.N" ],
-                                         mean = judgeSplit[[i]][ "Mean" ],
+                                         median = judgeSplit[[i]][ "Median" ],
                                          sd = judgeSplit[[i]]["sd" ],
                                          min = judgeSplit[[i]][ "Min." ],
                                          max = judgeSplit[[i]][ "Max." ] )
@@ -202,7 +202,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                                          N = reprSplit[[i]][ "N" ],
                                          miss = reprSplit[[i]][ "miss.N" ],
                                          total = reprSplit[[i]][ "total" ],
-                                         mean = reprSplit[[i]][ "Mean" ],
+                                         median = reprSplit[[i]][ "Median" ],
                                          sd = reprSplit[[i]]["sd" ],
                                          min = reprSplit[[i]][ "Min." ],
                                          max = reprSplit[[i]][ "Max." ] )
@@ -232,7 +232,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           hist( x = duration, main = "Histogram of judgement duration",
                 xlab = "Durations", ylab = "Freq",
                 col = "#2080be" )
-          abline( v = resultGen[ "Mean" ], col = "#c24446", lty = 2 )
+          abline( v = resultGen[ "Median" ], col = "#c24446", lty = 2 )
           
           TRUE
         },
@@ -267,13 +267,13 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             hist( x = duration[[i]], main = names( duration )[i],
                   xlab = "Durations", ylab = "Freq",
                   col = plotCol[i] )
-            abline( v = resultGen[ "Mean" ], col = "#c24446", lty = 2 )
-            abline( v = resultSplit[[i]][ "Mean" ], col = "#a0c178", lty = 2 )
+            abline( v = resultGen[ "Median" ], col = "#c24446", lty = 2 )
+            abline( v = resultSplit[[i]][ "Median" ], col = "#a0c178", lty = 2 )
           }
           rm(i)
 
           plot.new()
-          legend( "topleft", legend = c( "General mean", "Group mean" ),
+          legend( "topleft", legend = c( "General median", "Group median" ),
                   col = c( "#c24446", "#a0c178" ), lty = 2 )
 
           title( main = "Histogram of judgement duration", sub = "Per Judge",
@@ -312,8 +312,8 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
             histObj <- hist( x = duration[[i]], main = names( duration )[i],
                              xlab = "Durations", ylab = "Freq",
                              col = plotCol[i] )
-            abline( v = resultGen[ "Mean" ], col = "#c24446", lty = 2 )
-            abline( v = resultSplit[[i]][ "Mean" ], col = "#a0c178", lty = 2 )
+            abline( v = resultGen[ "Median" ], col = "#c24446", lty = 2 )
+            abline( v = resultSplit[[i]][ "Median" ], col = "#a0c178", lty = 2 )
             text( x = max( histObj$mids ), y = max( histObj$counts ),
                   labels = paste0( "Total duration: ", resultSplit[[i]][ "total" ] ),
                   xpd = T )
@@ -321,7 +321,7 @@ timeAnalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           rm(i)
           
           plot.new()
-          legend( "topleft", legend = c( "General mean", "Group mean" ),
+          legend( "topleft", legend = c( "General median", "Group median" ),
                   col = c( "#c24446", "#a0c178" ), lty = 2 )
           
           title( main = "Histogram of judgement duration", sub = "Per Judge",
