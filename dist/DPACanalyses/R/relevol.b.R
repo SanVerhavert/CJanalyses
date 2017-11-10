@@ -37,6 +37,8 @@ relEvolClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         Data <- calcScore( Data = Data )
         #---------------------------------------------------------------------
         
+        Data <- na.omit( Data )
+        
         # Order data on OrderOn ----
         timeVec <- strptime( as.character( Data$OrderOn ),
                              format = "%Y/%m/%d %H:%M:%S" )

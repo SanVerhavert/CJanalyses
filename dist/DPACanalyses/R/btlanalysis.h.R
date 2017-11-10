@@ -207,6 +207,10 @@ BTLanalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                                                 `title`="Rank Number", 
                                                 `type`="integer"),
                                             list(
+                                                `name`="id", 
+                                                `title`="id", 
+                                                `type`="integer"),
+                                            list(
                                                 `name`="Repr", 
                                                 `title`="Representation", 
                                                 `type`="text"),

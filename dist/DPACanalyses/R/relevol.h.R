@@ -118,7 +118,7 @@ relEvolResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 options=options,
                 name="debugText",
                 title="Debug",
-                visible=TRUE)
+                visible=FALSE)
             private$..Warning <- jmvcore::Preformatted$new(
                 options=options,
                 name="Warning",

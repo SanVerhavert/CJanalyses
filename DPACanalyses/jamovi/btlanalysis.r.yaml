@@ -43,6 +43,10 @@ items:
             - name: RankNo
               title: Rank Number
               type: integer
+              
+            - name: id
+              title: id
+              type: integer
           
             - name: Repr
               title: Representation

@@ -79,7 +79,7 @@ timeAnalysisResults <- if (requireNamespace('jmvcore')) R6::R6Class(
                 options=options,
                 name="debugText",
                 title="Debug",
-                visible=TRUE)
+                visible=FALSE)
             private$..talk <- jmvcore::Preformatted$new(
                 options=options,
                 name="talk",

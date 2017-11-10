@@ -30,18 +30,35 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       Data$Repr2 <- as.character( Data$Repr2 )
       Data$Selected <- as.character( Data$Selected )
       
+      Judge <- Data$Judge
+      
+      if( any( is.na( as.numeric( Judge ) ) ) )
+      {
+        judgeID <- data.frame( id = 1:length( Judge ), Judge = Judge )
+      } else
+      {
+        judgeID <- data.frame( id = as.numeric( Judge ), Judge = Judge )
+      }
+      
+      rm( Repr )
+      
+      Repr <- unique( c( Data$Repr1, Data$Repr2 ) )
+      
+      if( any( is.na( as.numeric( Repr ) ) ) )
+      {
+        reprID <- data.frame( id = 1:length( Repr ), Repr = Repr )
+      } else
+      {
+        reprID <- data.frame( id = as.numeric( Repr), Repr = Repr )
+      }
+      
+      rm( Repr )
+      
       #---------------------------------------------------------------------
       # Calculate Score ----
       # will eventually be removed when jamovi functionality is expanded
       Data <- calcScore( Data = Data )
       #---------------------------------------------------------------------
-      
-      if( self$options$plotGraph )
-      {
-        image <- self$results$mainTitle$networkPlot
-        image$setState( Score2igraph( Data[ , c( "Repr1", "Repr2", "Score" ) ] ) )
-      }
-      
       # Estimate (core analysis) ----
       ### Preparations ###
       origDataLength <- length( Data$Repr1 )
@@ -85,14 +102,18 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       
       for( i in 1:length( Abil$Repr ) )
       {
+        idx <- match( as.character( Abil$Repr[i] ), reprID$Repr )
+                         
         Table$addRow( rowKey = i,
                       values = list(
                         RankNo = i,
+                        id = reprID$id[idx],
                         Repr = as.character( Abil$Repr[i] ),
-                        Ability= Abil$Ability[i],
                         se = Abil$se[i]
                       )
         )
+        
+        rm(idx)
       }
       rm(i)
       
@@ -155,27 +176,33 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         
         for( i in 1:nrow( judgeMisfit ) )
         {
+          idx <- match( as.character( judgeMisfit$Judge[i] ), judgeID$Judge )
+          
           judgeMisfitTable$addRow( rowKey = i,
                                    values = list(
-                                     id = i,
+                                     id = judgeID$id[idx],
                                      Judge = as.character( judgeMisfit$Judge[i] ),
                                      Infit = judgeMisfit$Infit[i],
                                      Flag = judgeMisfit$Flag[i]
                                    )
           )
+          rm(idx)
         }
         rm(i)
         
         for( i in 1:nrow( reprMisfit ) )
         {
+          idx <- match( as.character( reprMisfit$Repr[i] ), reprID$Repr )
+          
           reprMisfitTable$addRow( rowKey = i,
                                   values = list(
-                                    id = i,
+                                    id = reprID$id[idx],
                                     Repr = as.character( reprMisfit$Repr[i] ),
                                     Infit = reprMisfit$Infit[i],
                                     Flag = reprMisfit$Flag[i]
                                   )
           )
+          rm(idx)
         }
         rm(i)
         
@@ -193,29 +220,66 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         
         for( i in 1:nrow( judgeMisfit ) )
         {
+          idx <- match( as.character( judgeMisfit$Judge[i] ), judgeID$Judge )
+          
           judgeMisfitTable$addRow( rowKey = i,
                                    values = list(
-                                     id = i,
+                                     id = judgeID$id[idx],
                                      Judge = as.character( judgeMisfit$Judge[i] ),
                                      Lz = judgeMisfit$Lz_Misfit[i],
                                      Flag = judgeMisfit$Flag[i]
                                    )
           )
+          rm(idx)
         }
         rm(i)
         
         for( i in 1:nrow( reprMisfit ) )
         {
+          idx <- match( as.character( reprMisfit$Repr[i] ), reprID$Repr )
+          
           reprMisfitTable$addRow( rowKey = i,
                                   values = list(
-                                    id = i,
+                                    id = reprID$id[idx],
                                     Repr = as.character( reprMisfit$Repr[i] ),
                                     Lz = reprMisfit$Lz_Misfit[i],
                                     Flag = reprMisfit$Flag[i]
                                   )
           )
+          
+          rm(idx)
         }
         rm(i)
+      }
+      
+      #-------------------------------------------------------------------------
+      
+      # preparations for plots ----
+      Table$setState( Abil )
+
+      if( self$options$plotGraph )
+      {
+        self$results$mainTitle$networkPlot$setVisible( visible = TRUE )
+        image <- self$results$mainTitle$networkPlot
+        Data[ , c("Repr1" ) ] <- plyr::mapvalues( Data[ , c("Repr1" ) ],
+                                                  from = reprID$Repr,
+                                                  to = reprID$id )
+        Data[ , c("Repr2" ) ] <- plyr::mapvalues( Data[ , c("Repr2" ) ],
+                                                  from = reprID$Repr,
+                                                  to = reprID$id )
+        image$setState( Score2igraph( Data[ , c( "Repr1", "Repr2", "Score" ) ] ) )
+      } else
+      {
+        self$results$mainTitle$networkPlot$setVisible( visible = FALSE )
+      }
+      
+      if( self$options$plotScale )
+      {
+        self$results$mainTitle$scalePlot$setVisible( visible = TRUE )
+        self$results$mainTitle$scalePlot$setState( reprID )
+      } else
+      {
+        self$results$mainTitle$scalePlot$setVisible( visible = FALSE )
       }
       
       if( self$options$misfit != "none" )
@@ -227,6 +291,9 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         {
           misfitGroup$judgePlot$setVisible( TRUE )
           misfitGroup$reprPlot$setVisible( TRUE )
+          
+          misfitGroup$judgePlot$setState( judgeID )
+          misfitGroup$reprPlot$setState( reprID )
         } else
         {
           misfitGroup$judgePlot$setVisible( FALSE )
@@ -234,26 +301,6 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         }
       }
       
-      #-------------------------------------------------------------------------
-      
-      # preparations for plots ----
-      Table$setState( Abil )
-      
-      if( self$options$plotGraph )
-      {
-        self$results$mainTitle$networkPlot$setVisible( visible = TRUE )
-      } else
-      {
-        self$results$mainTitle$networkPlot$setVisible( visible = FALSE )
-      }
-      
-      if( self$options$plotScale )
-      {
-        self$results$mainTitle$scalePlot$setVisible( visible = TRUE )
-      } else
-      {
-        self$results$mainTitle$scalePlot$setVisible( visible = FALSE )
-      }
       
     },
     .netPlot = function( image, ... ) {
@@ -275,6 +322,9 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
     },
     .scalePlot = function( image, ...) {
       Ability <- self$results$mainTitle$tableTitle$table$state
+      reprID <- self$results$mainTitle$scalePlot$state
+      
+      idx <- match( Ability$Repr, reprID$Repr )
       
       yMax <- max( Ability$Ability ) + 2 * max( Ability$se )
       yMin <- min( Ability$Ability ) - 2 * max( Ability$se )
@@ -285,7 +335,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
       plot( 1:length( Ability$Repr ), Ability$Ability, col = plotCol,
             xaxt = "n", xlab = "Representation",
             ylab = "Logit Score", ylim = c( yMin, yMax ) )
-      axis( side = 1, at = 1:length( Ability$Repr ) )
+      axis( side = 1, at = 1:length( Ability$Repr ), labels = reprID$id[idx] )
       errbar( 1:length( Ability$Repr ), Ability$Ability,
               height = 2 * Ability$se, width = .05, col = plotCol )
       
@@ -293,6 +343,9 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
     },
     .JudgePlot = function( image, ... ) {
       misfit <- self$results$mainTitle$misfitTable$judgeMisfit$state
+      judgeID <- self$results$mainTitle$misfitTable$judgePlot$state
+      
+      idx <- match( misfit$Judge, judgeID$Judge )
       
       plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
       plotCol <- plotCol( length( misfit$Judge) )
@@ -305,8 +358,9 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         
         plot( 1:length( misfit$Judge ), misfit$Infit, xlab = "Judge",
               ylab = "Infit", ylim = c( ymin, ymax ),
-              col = plotCol )
+              col = plotCol, xaxt = "n" )
         abline( h = self$options$flagBound, col = "red" )
+        axis( side = 1, at = 1:length( misfit$Judge ), labels = judgeID$id[idx] )
       } else if( self$options$misfit == "Lz" )
       {
         ymin <- min( min( misfit$Lz ) - 0.5,
@@ -316,7 +370,8 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         
         plot( 1:length( misfit$Judge ), misfit$Lz, xlab = "Judge",
               ylab = "Lz", ylim = c( ymin, ymax ),
-              col = plotCol )
+              col = plotCol, xaxt = "n" )
+        axis( side = 1, at = 1:length( misfit$Judge ), labels = judgeID$id[idx] )
         abline( h = self$options$flagBound * -1, col = "red" )
       }
       
@@ -324,6 +379,9 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
     },
     .ReprPlot = function( image, ... ) {
       misfit <- self$results$mainTitle$misfitTable$reprMisfit$state
+      reprID <- self$results$mainTitle$misfitTable$reprPlot$state
+      
+      idx <- match( misfit$Repr, reprID$Repr )
       
       plotCol <- colorRampPalette( c( "#2080be", "#c6ddf1", "#57b6af" ) )
       plotCol <- plotCol( length( misfit$Repr) )
@@ -336,8 +394,10 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         
         plot( 1:length( misfit$Repr ), misfit$Infit, xlab = "Representation",
               ylab = "Infit", ylim = c( ymin, ymax ),
-              col = plotCol )
+              col = plotCol, xaxt = "n" )
+        axis( side = 1, at = 1:length( misfit$Repr ), labels = reprID$id[idx] )
         abline( h = self$options$flagBound, col = "red" )
+        
       } else if( self$options$misfit == "Lz" )
       {
         ymin <- min( min( misfit$Lz ) - 0.5,
@@ -347,7 +407,8 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         
         plot( 1:length( misfit$Repr ), misfit$Lz, xlab = "Representation",
               ylab = "Lz", ylim = c( ymin, ymax ),
-              col = plotCol )
+              col = plotCol, xaxt = "n" )
+        axis( side = 1, at = 1:length( misfit$Repr ), labels = reprID$id[idx] )
         abline( h = self$options$flagBound * -1, col = "red" )
       }
       

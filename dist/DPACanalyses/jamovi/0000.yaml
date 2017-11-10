@@ -6,7 +6,7 @@ jms: '1.0'
 authors:
   - San Verhavert
 maintainer: San Verhavert <san.verhavert@uantwerpen.be>
-date: '1970-01-01'
+date: 2017-10/26
 type: R
 description: >-
   This package contains analyses you can conduct on Comparative Judgement data
