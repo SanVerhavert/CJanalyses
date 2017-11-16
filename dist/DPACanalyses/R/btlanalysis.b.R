@@ -109,6 +109,7 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
                         RankNo = i,
                         id = reprID$id[idx],
                         Repr = as.character( Abil$Repr[i] ),
+                        Ability = Abil$Ability[i],
                         se = Abil$se[i]
                       )
         )
@@ -162,7 +163,8 @@ BTLanalysisClass <- if (requireNamespace('jmvcore')) R6::R6Class(
         
         judgeMisfit.stats <- judgeMisfit$misfit.stats
         reprMisfit.stats <- reprMisfit$misfit.stats
-        
+        self$results$debugText$setVisible(TRUE)
+        self$results$debugText$setContent(judgeMisfit)
         judgeMisfit <- judgeMisfit$misfit
         reprMisfit <- reprMisfit$misfit
         

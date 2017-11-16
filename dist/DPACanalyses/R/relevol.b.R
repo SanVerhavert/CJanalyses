@@ -233,8 +233,9 @@ relEvolClass <- if (requireNamespace('jmvcore')) R6::R6Class(
           plot( x = 0, y = 0, main = "Judgements per judge per round",
                 xlab = "Rounds", ylab = "n judgements",
                 xlim = c( 1, max( reliabEvol$rounds ) ),
-                ylim = c( 0, nRounds ), type = "n", col = plotCol[1] )
-
+                ylim = c( 0, max( nJudgements[ , -1 ], na.rm = T ) ), type = "n",
+                col = plotCol[1] )
+          
           for( i in 1:length( nJudgements$Judge ) )
           {
             lines( 1:nRounds , nJudgements[ i, -1 ],
